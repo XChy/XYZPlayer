@@ -11,6 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = XYZPlayer
 TEMPLATE = app
 
+INCLUDEPATH+=D:\Library-Cpp\QtAV\include
+LIBS+=-L D:\Library-Cpp\QtAV\lib -lavcodec -lavdevice -lavfilter -lavformat -lavresample  -lavutil -lQtAV1 -lswresample -lswscale
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -25,10 +28,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        MainWindow.cpp
+        MainWindow.cpp \
+    MusicPlayer.cpp \
+    MusicObject.cpp
 
 HEADERS += \
-        MainWindow.h
+        MainWindow.h \
+    MusicPlayer.h \
+    MusicObject.h
 
 FORMS += \
         MainWindow.ui

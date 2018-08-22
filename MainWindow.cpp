@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	ui->playButton->setProperty("is_playing",true);
 	ui->volumeButton->setProperty("is_mute",false);
+	ui->playbackModeButton->setProperty("playbackmode","loop");
 }
 
 void MainWindow::paintEvent(QPaintEvent* e)
