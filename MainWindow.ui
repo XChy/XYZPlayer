@@ -31,12 +31,12 @@
      <number>3</number>
     </property>
     <item>
-     <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0">
+     <layout class="QGridLayout" name="gridLayout" rowstretch="1,0,0,0">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
-      <item row="0" column="4">
-       <spacer name="horizontalSpacer_2">
+      <item row="0" column="0">
+       <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -51,7 +51,7 @@
         </property>
        </spacer>
       </item>
-      <item row="2" column="0" colspan="5">
+      <item row="3" column="0" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,4,4,13,3,3,3">
         <property name="spacing">
          <number>6</number>
@@ -175,6 +175,9 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="invertedAppearance">
+           <bool>false</bool>
+          </property>
          </widget>
         </item>
         <item>
@@ -199,6 +202,12 @@
           </property>
           <property name="text">
            <string/>
+          </property>
+          <property name="popupMode">
+           <enum>QToolButton::InstantPopup</enum>
+          </property>
+          <property name="autoRaise">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -254,27 +263,8 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1" rowspan="2" colspan="3">
-       <widget class="QWidget" name="pictureView" native="true"/>
-      </item>
-      <item row="1" column="4">
-       <widget class="QWidget" name="infoView" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimumSize">
-         <size>
-          <width>150</width>
-          <height>50</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <spacer name="horizontalSpacer">
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer_2">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -288,6 +278,64 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="0" column="1" rowspan="2">
+       <widget class="QLabel" name="pictureLabel">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QWidget" name="infoView" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>50</height>
+         </size>
+        </property>
+        <widget class="QLabel" name="titleLabel">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>0</y>
+           <width>141</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Old Memory</string>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="artistLabel">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>25</y>
+           <width>141</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>三轮学</string>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
+       </widget>
       </item>
      </layout>
     </item>

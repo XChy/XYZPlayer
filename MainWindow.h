@@ -2,7 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <MusicPlayer.h>
 #include <QPainter>
+#include <QWidgetAction>
+#include <QFileDialog>
+#include <QSlider>
 
 namespace Ui {
 class MainWindow;
@@ -19,6 +23,8 @@ public:
 
 private:
 	Ui::MainWindow *ui;
+	MusicPlayer mPlayer;
+	QSlider* mVolumeSlider;
 };
 
 #endif // MAINWINDOW_H
