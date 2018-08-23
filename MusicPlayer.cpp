@@ -36,8 +36,13 @@ int MusicPlayer::currentIndex() const
 void MusicPlayer::setCurrentIndex(int currentIndex)
 {
 	mCurrentIndex = currentIndex;
-	setFile(mPlaylist[currentIndex].path);
+	setFile(currentMusic().path);
 	emit currentIndexChanged(currentIndex);
+}
+
+MusicObject& MusicPlayer::currentMusic()
+{
+	return mPlaylist[mCurrentIndex];
 }
 
 void MusicPlayer::addMusic(const MusicObject& obj)
@@ -105,6 +110,53 @@ bool MusicPlayer::canPlayback()
 		case Sequential:
 			return mCurrentIndex!=mPlaylist.size()-1;
 	}
+}
+
+void MusicPlayer::loadInfo(int index)
+{
+	AVFormatContext *fmt_ctx = NULL;
+	AVDictionaryEntry *tag = NULL;
+	int ret;
+
+	av_register_all();
+
+	if ((ret = avformat_open_input(&fmt_ctx, mPlaylist[index].path.toLocal8Bit(), NULL, NULL))){
+		printf("Fail to open file");
+	}
+
+	//读取metadata中所有的tag
+	while ((tag = av_dict_get(fmt_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))){
+		mPlaylist[index].info[tag->key]=tag->value;
+	}
+	emit loadedInfo(index);
+}
+
+void MusicPlayer::loadPicture(int index)
+{
+	AVFormatContext *fmt_ctx = NULL;
+	AVDictionaryEntry *tag = NULL;
+	int ret;
+
+	av_register_all();
+
+	if ((ret = avformat_open_input(&fmt_ctx,mPlaylist[index].path.toLocal8Bit(), NULL, NULL))){
+		printf("Fail to open file");
+	}
+
+	if (fmt_ctx->iformat->read_header(fmt_ctx) < 0) {
+		printf("No header format");
+		return;
+	}
+
+	for (int i = 0; i < fmt_ctx->nb_streams; i++){
+		if (fmt_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
+			AVPacket pkt = fmt_ctx->streams[i]->attached_pic;
+			//使用QImage读取完整图片数据（注意，图片数据是为解析的文件数据，需要用QImage::fromdata来解析读取）
+			mPlaylist[index].picture = QImage::fromData((uchar*)pkt.data, pkt.size);
+			break;
+		}
+	}
+	emit loadedPicture(index);
 }
 
 void MusicPlayer::onMediaStatusChanged(QtAV::MediaStatus state)

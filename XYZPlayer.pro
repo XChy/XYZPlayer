@@ -12,7 +12,7 @@ TARGET = XYZPlayer
 TEMPLATE = app
 
 INCLUDEPATH+=D:\Library-Cpp\QtAV\include
-LIBS+=-L D:\Library-Cpp\QtAV\lib -lavcodec -lavdevice -lavfilter -lavformat -lavresample  -lavutil -lQtAV1 -lswresample -lswscale
+LIBS+=-L D:\Library-Cpp\QtAV\lib\ -lavcodec -lavdevice -lavfilter -lavformat -lavresample  -lavutil -lQtAV1 -lswresample -lswscale
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings

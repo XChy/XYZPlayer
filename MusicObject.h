@@ -2,7 +2,7 @@
 #define MUSICOBJECT_H
 
 #include <QMap>
-#include <QPixmap>
+#include <QImage>
 
 class MusicObject
 {
@@ -11,7 +11,7 @@ public:
 
 	QString path;
 	QMap<QString,QString> info;
-	QPixmap picture;
+	QImage picture;
 };
 
 #endif // MUSICOBJECT_H

@@ -2,5 +2,4 @@
 
 MusicObject::MusicObject()
 {
-
 }

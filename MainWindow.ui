@@ -52,7 +52,7 @@
        </spacer>
       </item>
       <item row="3" column="0" colspan="3">
-       <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,4,4,13,3,3,3">
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="4,4,4,13,0,0,0">
         <property name="spacing">
          <number>6</number>
         </property>
@@ -206,13 +206,13 @@
           <property name="popupMode">
            <enum>QToolButton::InstantPopup</enum>
           </property>
-          <property name="autoRaise">
-           <bool>false</bool>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonFollowStyle</enum>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="playbackModeButton">
+         <widget class="QPushButton" name="playbackModeButton">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -259,6 +259,12 @@
           <property name="text">
            <string/>
           </property>
+          <property name="popupMode">
+           <enum>QToolButton::InstantPopup</enum>
+          </property>
+          <property name="toolButtonStyle">
+           <enum>Qt::ToolButtonFollowStyle</enum>
+          </property>
          </widget>
         </item>
        </layout>
@@ -281,6 +287,12 @@
       </item>
       <item row="0" column="1" rowspan="2">
        <widget class="QLabel" name="pictureLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -313,7 +325,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>Old Memory</string>
+          <string/>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::TextSelectableByMouse</set>
@@ -329,7 +341,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>三轮学</string>
+          <string/>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::TextSelectableByMouse</set>

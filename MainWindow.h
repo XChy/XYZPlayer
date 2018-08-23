@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	void paintEvent(QPaintEvent* e);
+	void resizeEvent(QResizeEvent* e);
 	~MainWindow();
 
 private:

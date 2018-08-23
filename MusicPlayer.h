@@ -2,6 +2,10 @@
 #define MUSICPLAYER_H
 
 #include <MusicObject.h>
+extern "C"{
+#include <libavformat/avformat.h>
+}
+
 #include <QtAV/QtAV>
 #include <QList>
 
@@ -27,6 +31,8 @@ public:
 	int currentIndex() const;
 	void setCurrentIndex(int currentIndex);
 
+	MusicObject& currentMusic();
+
 	void addMusic(const MusicObject& obj);
 	void addMusicToCurrent(const MusicObject& obj);
 
@@ -36,8 +42,13 @@ public:
 
 	void playback();
 	bool canPlayback();
+
+	void loadInfo(int index);
+	void loadPicture(int index);
 signals:
 	void currentIndexChanged(int);
+	void loadedInfo(int);
+	void loadedPicture(int);
 private:
 	void onMediaStatusChanged(QtAV::MediaStatus state);
 private:
