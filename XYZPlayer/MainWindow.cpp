@@ -4,19 +4,36 @@
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
-	mVolumeSlider(new QSlider)
+	mVolumeMenu(new QMenu(this)),
+	mVolumeSlider(new QSlider),
+	mPlaylistModel(new PlaylistModel(this)),
+	mPlaylistView(new PlaylistView),
+	mPlaylistMenu(new QMenu(this))
 {
 	ui->setupUi(this);
 	ui->playButton->setProperty("is_playing",false);
 	ui->volumeButton->setProperty("is_mute",false);
 	ui->playbackModeButton->setProperty("playbackmode","loop");
-	auto volumeMenu=new QMenu(ui->volumeButton);
-	auto volumeAction=new QWidgetAction(volumeMenu);
+
+	auto volumeAction=new QWidgetAction(mVolumeMenu);
+	mVolumeSlider->setParent(mVolumeMenu);
 	mVolumeSlider->setRange(0,100);
 	mVolumeSlider->setFixedSize(25,100);
+	mVolumeSlider->setValue(mPlayer.audio()->volume()*100);
 	volumeAction->setDefaultWidget(mVolumeSlider);
-	volumeMenu->addActions({volumeAction});
-	ui->volumeButton->setMenu(volumeMenu);
+	mVolumeMenu->setFixedSize(mVolumeSlider->size()+QSize(2,4));
+	mVolumeMenu->setNoReplayFor(ui->volumeButton);
+	mVolumeMenu->addActions({volumeAction});
+
+	mPlaylistModel->setPlayer(&mPlayer);
+	mPlaylistView->setModel(mPlaylistModel);
+	mPlaylistView->setFixedSize(300,400);
+	mPlaylistView->setParent(mPlaylistMenu);
+	auto playlistAction=new QWidgetAction(mPlaylistMenu);
+	playlistAction->setDefaultWidget(mPlaylistView);
+	mPlaylistMenu->setFixedSize(mPlaylistView->size()+QSize(2,4));
+	mPlaylistMenu->setNoReplayFor(ui->playlistButton);
+	mPlaylistMenu->addActions({playlistAction});
 
 	connect(ui->OpenAction,&QAction::triggered,this,&MainWindow::onClickedOpen);
 	connect(&mPlayer,&MusicPlayer::currentIndexChanged,this,&MainWindow::onCurrentIndexChanged);
@@ -29,6 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(mVolumeSlider,&QSlider::valueChanged,this,&MainWindow::onVolumeSliderValueChanged);
 	connect(ui->posSlider,&QSlider::sliderPressed,this,&MainWindow::onPosSliderPressed);
 	connect(ui->posSlider,&QSlider::sliderMoved,&mPlayer,&MusicPlayer::setPosition);
+
+	connect(ui->volumeButton,&QPushButton::clicked,this,&MainWindow::popupVolumeMenu);
+	connect(ui->playlistButton,&QPushButton::clicked,this,&MainWindow::popupPlaylistMenu);
 
 	connect(ui->posSlider,&QSlider::sliderReleased,this,&MainWindow::onPosSliderReleased);
 	connect(ui->playbackModeButton,&QPushButton::clicked,this,&MainWindow::onClickedPlaybackMode);
@@ -116,6 +136,21 @@ void MainWindow::onClickedPlaybackMode()
 	ui->playbackModeButton->update();
 }
 
+void MainWindow::popupVolumeMenu()
+{
+	QPoint btnPos=ui->volumeButton->pos();
+	QPoint globalPos=this->mapToGlobal(QPoint(btnPos.x(),footerY()-mVolumeMenu->height()-3));
+	mVolumeMenu->move(globalPos);
+	mVolumeMenu->show();
+}
+
+void MainWindow::popupPlaylistMenu()
+{
+	QPoint globalPos=this->mapToGlobal(QPoint(width()-mPlaylistMenu->width()-3,footerY()-mPlaylistMenu->height()-3));
+	mPlaylistMenu->move(globalPos);
+	mPlaylistMenu->show();
+}
+
 void MainWindow::onPosSliderPressed()
 {
 	mPlayer.audio()->close();
@@ -136,12 +171,17 @@ void MainWindow::onPosSliderReleased()
 		mPlayer.audio()->open();
 }
 
+int MainWindow::footerY()
+{
+	return height()-ui->playButton->height()-15;
+}
+
 void MainWindow::paintEvent(QPaintEvent* e)
 {
 	QPainter painter(this);
 	painter.setPen(QColor(0xb2,0xb2,0xb2));
-	int top=height()-ui->playButton->height()-15;
-	painter.drawLine(QPoint(3,top),QPoint(width()-3,top));
+	int y = footerY();
+	painter.drawLine(QPoint(3,y),QPoint(width()-3,y));
 }
 
 void MainWindow::resizeEvent(QResizeEvent* e)

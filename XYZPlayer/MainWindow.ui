@@ -181,7 +181,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="volumeButton">
+         <widget class="QPushButton" name="volumeButton">
           <property name="enabled">
            <bool>true</bool>
           </property>
@@ -202,12 +202,6 @@
           </property>
           <property name="text">
            <string/>
-          </property>
-          <property name="popupMode">
-           <enum>QToolButton::InstantPopup</enum>
-          </property>
-          <property name="toolButtonStyle">
-           <enum>Qt::ToolButtonFollowStyle</enum>
           </property>
          </widget>
         </item>
@@ -240,7 +234,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QToolButton" name="playlistButton">
+         <widget class="QPushButton" name="playlistButton">
           <property name="minimumSize">
            <size>
             <width>40</width>
@@ -258,12 +252,6 @@
           </property>
           <property name="text">
            <string/>
-          </property>
-          <property name="popupMode">
-           <enum>QToolButton::InstantPopup</enum>
-          </property>
-          <property name="toolButtonStyle">
-           <enum>Qt::ToolButtonFollowStyle</enum>
           </property>
          </widget>
         </item>
@@ -288,10 +276,16 @@
       <item row="0" column="1" rowspan="2">
        <widget class="QLabel" name="pictureLabel">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>300</height>
+         </size>
         </property>
         <property name="text">
          <string/>
@@ -301,10 +295,10 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="0">
        <widget class="QWidget" name="infoView" native="true">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>

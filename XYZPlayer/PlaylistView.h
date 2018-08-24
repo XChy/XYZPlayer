@@ -8,7 +8,7 @@
 class PlaylistView : public QTableView
 {
 public:
-	PlaylistView();
+	PlaylistView(QWidget* parent=nullptr);
 private:
 	QMenu* mPopupMenu;
 };

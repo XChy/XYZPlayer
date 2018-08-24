@@ -1,7 +1,8 @@
 #include "PlaylistView.h"
 
-PlaylistView::PlaylistView()
-	:mPopupMenu(new QMenu(this))
+PlaylistView::PlaylistView(QWidget* parent)
+	:QTableView(parent)
+	  ,mPopupMenu(new QMenu(this))
 {
 
 }
