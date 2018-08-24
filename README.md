@@ -1,5 +1,5 @@
 # XYZPlayer
-The Music Player based on QtAV
-C++ Standard Library : c++11
-Depend on QtAV
+The Music Player based on QtAV</br>
+C++ Standard Library : c++11</br>
+Depend on QtAV</br>
 Have not done yet...
