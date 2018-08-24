@@ -1,4 +1,5 @@
 #include "MusicPlayer.h"
+#include <QDebug>
 
 MusicPlayer::MusicPlayer()
 	:mCurrentIndex(-1),
@@ -121,13 +122,21 @@ void MusicPlayer::loadInfo(int index)
 	av_register_all();
 
 	if ((ret = avformat_open_input(&fmt_ctx, mPlaylist[index].path.toLocal8Bit(), NULL, NULL))){
-		printf("Fail to open file");
+		char buffer[128];
+		av_strerror(ret,buffer,sizeof(buffer));
+		printf("Fail to open file at loadInfo AVError:%s\n",buffer);
+		return;
 	}
 
+	avformat_find_stream_info(fmt_ctx, NULL);
+	mPlaylist[index].duration=fmt_ctx->duration;
+	qDebug()<<mPlaylist[index].duration;
 	//读取metadata中所有的tag
 	while ((tag = av_dict_get(fmt_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))){
-		mPlaylist[index].info[tag->key]=tag->value;
+		mPlaylist[index].infoTags[tag->key]=tag->value;
 	}
+	avformat_close_input(&fmt_ctx);
+	avformat_free_context(fmt_ctx);
 	emit loadedInfo(index);
 }
 
@@ -140,7 +149,10 @@ void MusicPlayer::loadPicture(int index)
 	av_register_all();
 
 	if ((ret = avformat_open_input(&fmt_ctx,mPlaylist[index].path.toLocal8Bit(), NULL, NULL))){
-		printf("Fail to open file");
+		char buffer[128];
+		av_strerror(ret,buffer,sizeof(buffer));
+		printf("Fail to open file at loadPicture AVError:%s\n",buffer);
+		return;
 	}
 
 	if (fmt_ctx->iformat->read_header(fmt_ctx) < 0) {
@@ -156,6 +168,9 @@ void MusicPlayer::loadPicture(int index)
 			break;
 		}
 	}
+
+	avformat_close_input(&fmt_ctx);
+	avformat_free_context(fmt_ctx);
 	emit loadedPicture(index);
 }
 

@@ -42,3 +42,5 @@ FORMS += \
 
 RESOURCES += \
     res/res.qrc
+
+RC_ICONS=res/images/logo.ico

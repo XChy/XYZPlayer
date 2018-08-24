@@ -27,19 +27,19 @@ MainWindow::MainWindow(QWidget *parent) :
 		mPlayer.loadPicture(mPlayer.currentIndex());
 		mPlayer.play();
 	});
-
 	connect(&mPlayer,&MusicPlayer::currentIndexChanged,[&](){
-		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer.currentMusic().info["title"],Qt::ElideRight,ui->titleLabel->width());
-		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer.currentMusic().info["artist"],Qt::ElideRight,ui->artistLabel->width());
+		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer.currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
+		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer.currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
 		ui->titleLabel->setText(title);
 		ui->artistLabel->setText(artist);
 		ui->pictureLabel->setPixmap(QPixmap::fromImage(mPlayer.currentMusic().picture).scaled(ui->pictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
+		ui->posSlider->setValue(0);
 	});
 
 	connect(&mPlayer,&MusicPlayer::loadedInfo,[&](int index){
 		if(index==mPlayer.currentIndex()){
-			QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer.currentMusic().info["title"],Qt::ElideRight,ui->titleLabel->width());
-			QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer.currentMusic().info["artist"],Qt::ElideRight,ui->artistLabel->width());
+			QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer.currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
+			QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer.currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
 			ui->titleLabel->setText(title);
 			ui->artistLabel->setText(artist);
 		}

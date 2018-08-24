@@ -10,7 +10,10 @@ public:
 	MusicObject();
 
 	QString path;
-	QMap<QString,QString> info;
+	//info
+	QMap<QString,QString> infoTags;//title album artist etc.
+	int64_t duration;//μs
+	//picture
 	QImage picture;
 };
 
