@@ -27,18 +27,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-        main.cpp \
-        MainWindow.cpp \
-    MusicPlayer.cpp \
-    MusicObject.cpp
+	XYZPlayer/main.cpp \
+	XYZPlayer/MainWindow.cpp \
+    XYZPlayer/MusicPlayer.cpp \
+    XYZPlayer/MusicObject.cpp \
+    XYZPlayer/PlaylistView.cpp \
+    XYZPlayer/ItemDelegates.cpp
 
 HEADERS += \
-        MainWindow.h \
-    MusicPlayer.h \
-    MusicObject.h
+	XYZPlayer/MainWindow.h \
+    XYZPlayer/MusicPlayer.h \
+    XYZPlayer/MusicObject.h \
+    XYZPlayer/PlaylistView.h \
+    XYZPlayer/ItemDelegates.h
 
 FORMS += \
-        MainWindow.ui
+	XYZPlayer/MainWindow.ui
 
 RESOURCES += \
     res/res.qrc

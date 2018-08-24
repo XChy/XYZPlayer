@@ -130,7 +130,6 @@ void MusicPlayer::loadInfo(int index)
 
 	avformat_find_stream_info(fmt_ctx, NULL);
 	mPlaylist[index].duration=fmt_ctx->duration;
-	qDebug()<<mPlaylist[index].duration;
 	//读取metadata中所有的tag
 	while ((tag = av_dict_get(fmt_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))){
 		mPlaylist[index].infoTags[tag->key]=tag->value;
@@ -143,7 +142,6 @@ void MusicPlayer::loadInfo(int index)
 void MusicPlayer::loadPicture(int index)
 {
 	AVFormatContext *fmt_ctx = NULL;
-	AVDictionaryEntry *tag = NULL;
 	int ret;
 
 	av_register_all();
@@ -172,6 +170,40 @@ void MusicPlayer::loadPicture(int index)
 	avformat_close_input(&fmt_ctx);
 	avformat_free_context(fmt_ctx);
 	emit loadedPicture(index);
+}
+
+void MusicPlayer::asyncLoadInfo(int index)
+{
+	class Runnable:public QRunnable{
+	public:
+		Runnable(MusicPlayer* player,int index)
+			:mPlayer(player),mIndex(index){}
+		void run(){
+			mPlayer->loadInfo(mIndex);
+		}
+		MusicPlayer* mPlayer;
+		int mIndex;
+	};
+	Runnable* runnable=new Runnable(this,index);
+	runnable->setAutoDelete(true);
+	QThreadPool::globalInstance()->start(runnable);
+}
+
+void MusicPlayer::asyncLoadPicture(int index)
+{
+	class Runnable:public QRunnable{
+	public:
+		Runnable(MusicPlayer* player,int index)
+			:mPlayer(player),mIndex(index){}
+		void run(){
+			mPlayer->loadPicture(mIndex);
+		}
+		MusicPlayer* mPlayer;
+		int mIndex;
+	};
+	Runnable* runnable=new Runnable(this,index);
+	runnable->setAutoDelete(true);
+	QThreadPool::globalInstance()->start(runnable);
 }
 
 void MusicPlayer::onMediaStatusChanged(QtAV::MediaStatus state)

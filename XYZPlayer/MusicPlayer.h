@@ -1,13 +1,15 @@
 #ifndef MUSICPLAYER_H
 #define MUSICPLAYER_H
 
-#include <MusicObject.h>
 extern "C"{
 #include <libavformat/avformat.h>
 }
 
 #include <QtAV/QtAV>
+#include <QThreadPool>
 #include <QList>
+#include <QRunnable>
+#include <XYZPlayer/MusicObject.h>
 
 enum PlaybackMode{
 	Loop,
@@ -45,6 +47,9 @@ public:
 
 	void loadInfo(int index);
 	void loadPicture(int index);
+
+	void asyncLoadInfo(int index);
+	void asyncLoadPicture(int index);
 signals:
 	void currentIndexChanged(int);
 	void loadedInfo(int);
