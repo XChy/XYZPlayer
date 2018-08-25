@@ -13,11 +13,19 @@ public:
 	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-class TextItemDelegate : public QItemDelegate
+class TitleItemDelegate : public QItemDelegate
 {
 	Q_OBJECT
 public:
-	TextItemDelegate(QObject* parent=nullptr);
+	TitleItemDelegate(QObject* parent=nullptr);
+	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
+
+class ArtistItemDelegate : public QItemDelegate
+{
+	Q_OBJECT
+public:
+	ArtistItemDelegate(QObject* parent=nullptr);
 	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 

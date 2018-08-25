@@ -51,9 +51,9 @@ public:
 	void asyncLoadInfo(int index);
 	void asyncLoadPicture(int index);
 signals:
-	void currentIndexChanged(int);
-	void loadedInfo(int);
-	void loadedPicture(int);
+	void currentIndexChanged(int index);
+	void loadedInfo(int index);
+	void loadedPicture(int index);
 private:
 	void onMediaStatusChanged(QtAV::MediaStatus state);
 private:

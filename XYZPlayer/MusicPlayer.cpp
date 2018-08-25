@@ -152,7 +152,6 @@ void MusicPlayer::loadPicture(int index)
 		printf("Fail to open file at loadPicture AVError:%s\n",buffer);
 		return;
 	}
-
 	if (fmt_ctx->iformat->read_header(fmt_ctx) < 0) {
 		printf("No header format");
 		return;
@@ -164,6 +163,8 @@ void MusicPlayer::loadPicture(int index)
 			//使用QImage读取完整图片数据（注意，图片数据是为解析的文件数据，需要用QImage::fromdata来解析读取）
 			mPlaylist[index].picture = QImage::fromData((uchar*)pkt.data, pkt.size);
 			break;
+		}else if(fmt_ctx->streams[i]->disposition & AV_DISPOSITION_LYRICS){
+			qDebug()<<"good";
 		}
 	}
 
