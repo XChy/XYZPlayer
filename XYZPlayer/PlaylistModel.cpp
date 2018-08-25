@@ -38,6 +38,12 @@ bool PlaylistModel::setData(const QModelIndex& index, const QVariant& v, int rol
 	return false;
 }
 
+void PlaylistModel::refresh()
+{
+	beginResetModel();
+	endResetModel();
+}
+
 MusicPlayer* PlaylistModel::player() const
 {
 	return mPlayer;
@@ -45,5 +51,6 @@ MusicPlayer* PlaylistModel::player() const
 
 void PlaylistModel::setPlayer(MusicPlayer* player)
 {
+	connect(player,&MusicPlayer::currentIndexChanged,this,&PlaylistModel::refresh);
 	mPlayer = player;
 }

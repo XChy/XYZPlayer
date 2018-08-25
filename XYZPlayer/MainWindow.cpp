@@ -26,12 +26,22 @@ MainWindow::MainWindow(QWidget *parent) :
 	mVolumeMenu->addActions({volumeAction});
 
 	mPlaylistModel->setPlayer(&mPlayer);
+	mPlaylistView->setObjectName("PlaylistView");
 	mPlaylistView->setModel(mPlaylistModel);
 	mPlaylistView->setFixedSize(300,400);
 	mPlaylistView->setParent(mPlaylistMenu);
+	mPlaylistView->setColumnWidth(0,30);
+	mPlaylistView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Fixed);
+	mPlaylistView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
+	mPlaylistView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+	mPlaylistView->horizontalHeader()->setSectionResizeMode(3,QHeaderView::ResizeToContents);
+	mPlaylistView->setItemDelegateForColumn(0,new PlayingItemDelegate(this));
+	mPlaylistView->setItemDelegateForColumn(1,new TextItemDelegate(this));
+	mPlaylistView->setItemDelegateForColumn(2,new TextItemDelegate(this));
+	mPlaylistView->setItemDelegateForColumn(3,new DurationItemDelegate(this));
 	auto playlistAction=new QWidgetAction(mPlaylistMenu);
 	playlistAction->setDefaultWidget(mPlaylistView);
-	mPlaylistMenu->setFixedSize(mPlaylistView->size()+QSize(2,4));
+	mPlaylistMenu->setFixedSize(mPlaylistView->size()+QSize(2,2));
 	mPlaylistMenu->setNoReplayFor(ui->playlistButton);
 	mPlaylistMenu->addActions({playlistAction});
 

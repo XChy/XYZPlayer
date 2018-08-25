@@ -17,6 +17,8 @@ public:
 	void setPlayer(MusicPlayer* player);
 
 	bool setData(const QModelIndex& index, const QVariant& v, int role = Qt::EditRole);
+public slots:
+	void refresh();
 private:
 	MusicPlayer* mPlayer;
 };

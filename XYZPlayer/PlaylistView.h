@@ -2,6 +2,7 @@
 #define PLAYLISTVIEW_H
 
 #include <QTableView>
+#include <QHeaderView>
 #include <QMenu>
 #include <XYZPlayer/MusicPlayer.h>
 
