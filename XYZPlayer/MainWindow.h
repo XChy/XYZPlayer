@@ -7,8 +7,7 @@
 #include <QFileDialog>
 #include <QSlider>
 #include <XYZPlayer/MusicPlayer.h>
-#include <XYZPlayer/PlaylistView.h>
-#include <XYZPlayer/PlaylistModel.h>
+#include <XYZPlayer/PlaylistWidget.h>
 #include <XYZPlayer/ItemDelegates.h>
 
 namespace Ui {
@@ -27,7 +26,7 @@ public:
 
 private slots:
 	void onClickedOpen();
-	void onCurrentIndexChanged();
+	void onCurrentIndexChanged(int index);
 	void onLoadedInfo(int index);
 	void onLoadedPicture(int index);
 	void onClickedPlay();
@@ -41,12 +40,11 @@ private slots:
 
 private:
 	Ui::MainWindow *ui;
-	MusicPlayer mPlayer;
+	MusicPlayer* mPlayer;
 	QSlider* mVolumeSlider;
 	QMenu* mVolumeMenu;
 
-	PlaylistView* mPlaylistView;
-	PlaylistModel* mPlaylistModel;
+	PlaylistWidget* mPlaylistWidget;
 	QMenu* mPlaylistMenu;
 
 	int footerY();

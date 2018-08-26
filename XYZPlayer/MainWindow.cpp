@@ -4,10 +4,10 @@
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
+	mPlayer(new MusicPlayer),
 	mVolumeMenu(new QMenu(this)),
 	mVolumeSlider(new QSlider),
-	mPlaylistModel(new PlaylistModel(this)),
-	mPlaylistView(new PlaylistView),
+	mPlaylistWidget(new PlaylistWidget),
 	mPlaylistMenu(new QMenu(this))
 {
 	ui->setupUi(this);
@@ -19,44 +19,31 @@ MainWindow::MainWindow(QWidget *parent) :
 	mVolumeSlider->setParent(mVolumeMenu);
 	mVolumeSlider->setRange(0,100);
 	mVolumeSlider->setFixedSize(25,100);
-	mVolumeSlider->setValue(mPlayer.audio()->volume()*100);
+	mVolumeSlider->setValue(mPlayer->audio()->volume()*100);
 	volumeAction->setDefaultWidget(mVolumeSlider);
 	mVolumeMenu->setFixedSize(mVolumeSlider->size()+QSize(2,4));
 	mVolumeMenu->setNoReplayFor(ui->volumeButton);
 	mVolumeMenu->addActions({volumeAction});
 
-	mPlaylistModel->setPlayer(&mPlayer);
-	mPlaylistView->setObjectName("PlaylistView");
-	mPlaylistView->setModel(mPlaylistModel);
-	mPlaylistView->setFixedSize(300,400);
-	mPlaylistView->setParent(mPlaylistMenu);
-	mPlaylistView->setItemDelegateForColumn(0,new PlayingItemDelegate(this));
-	mPlaylistView->setItemDelegateForColumn(1,new TitleItemDelegate(this));
-	mPlaylistView->setItemDelegateForColumn(2,new ArtistItemDelegate(this));
-	mPlaylistView->setItemDelegateForColumn(3,new DurationItemDelegate(this));
-	mPlaylistView->setColumnWidth(0,30);
-	mPlaylistView->setColumnWidth(3,40);
-	mPlaylistView->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Fixed);
-	mPlaylistView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
-	mPlaylistView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
-	mPlaylistView->horizontalHeader()->setSectionResizeMode(3,QHeaderView::Fixed);
+	mPlayer->setParent(mPlaylistWidget);
+	mPlaylistWidget->setPlayer(mPlayer);
 	auto playlistAction=new QWidgetAction(mPlaylistMenu);
-	playlistAction->setDefaultWidget(mPlaylistView);
-	mPlaylistMenu->setFixedSize(mPlaylistView->size()+QSize(2,2));
+	playlistAction->setDefaultWidget(mPlaylistWidget);
+	mPlaylistMenu->setFixedSize(mPlaylistWidget->size()+QSize(2,2));
 	mPlaylistMenu->setNoReplayFor(ui->playlistButton);
 	mPlaylistMenu->addActions({playlistAction});
 
 	connect(ui->OpenAction,&QAction::triggered,this,&MainWindow::onClickedOpen);
-	connect(&mPlayer,&MusicPlayer::currentIndexChanged,this,&MainWindow::onCurrentIndexChanged);
-	connect(&mPlayer,&MusicPlayer::loadedInfo,this,&MainWindow::onLoadedInfo);
-	connect(&mPlayer,&MusicPlayer::loadedPicture,this,&MainWindow::onLoadedPicture);
+	connect(mPlayer,&MusicPlayer::currentIndexChanged,this,&MainWindow::onCurrentIndexChanged);
+	connect(mPlayer,&MusicPlayer::loadedInfo,this,&MainWindow::onLoadedInfo,Qt::QueuedConnection);
+	connect(mPlayer,&MusicPlayer::loadedPicture,this,&MainWindow::onLoadedPicture,Qt::QueuedConnection);
 	connect(ui->playButton,&QPushButton::clicked,this,&MainWindow::onClickedPlay);
-	connect(&mPlayer,&MusicPlayer::stateChanged,this,&MainWindow::onStateChanged);
-	connect(ui->nextButton,&QPushButton::clicked,&mPlayer,&MusicPlayer::playNext);
-	connect(ui->prevButton,&QPushButton::clicked,&mPlayer,&MusicPlayer::playPrev);
+	connect(mPlayer,&MusicPlayer::stateChanged,this,&MainWindow::onStateChanged);
+	connect(ui->nextButton,&QPushButton::clicked,mPlayer,&MusicPlayer::playNext);
+	connect(ui->prevButton,&QPushButton::clicked,mPlayer,&MusicPlayer::playPrev);
 	connect(mVolumeSlider,&QSlider::valueChanged,this,&MainWindow::onVolumeSliderValueChanged);
 	connect(ui->posSlider,&QSlider::sliderPressed,this,&MainWindow::onPosSliderPressed);
-	connect(ui->posSlider,&QSlider::sliderMoved,&mPlayer,&MusicPlayer::setPosition);
+	connect(ui->posSlider,&QSlider::sliderMoved,mPlayer,&MusicPlayer::setPosition);
 
 	connect(ui->volumeButton,&QPushButton::clicked,this,&MainWindow::popupVolumeMenu);
 	connect(ui->playlistButton,&QPushButton::clicked,this,&MainWindow::popupPlaylistMenu);
@@ -64,37 +51,45 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->posSlider,&QSlider::sliderReleased,this,&MainWindow::onPosSliderReleased);
 	connect(ui->playbackModeButton,&QPushButton::clicked,this,&MainWindow::onClickedPlaybackMode);
 
-	connect(&mPlayer,&MusicPlayer::durationChanged,ui->posSlider,&QSlider::setMaximum);
-	connect(&mPlayer,&MusicPlayer::positionChanged,ui->posSlider,&QSlider::setValue);
+	connect(mPlayer,&MusicPlayer::durationChanged,ui->posSlider,&QSlider::setMaximum);
+	connect(mPlayer,&MusicPlayer::positionChanged,ui->posSlider,&QSlider::setValue);
 }
 
 void MainWindow::onClickedOpen()
 {
-	QString fileName=QFileDialog::getOpenFileName(nullptr,"Add Music",".");
-	MusicObject obj;
-	obj.path=fileName;
-	mPlayer.addMusicToCurrent(obj);
-	mPlayer.asyncLoadInfo(mPlayer.currentIndex());
-	mPlayer.asyncLoadPicture(mPlayer.currentIndex());
-	mPlayer.play();
+	QStringList fileNames=QFileDialog::getOpenFileNames(this,"Add Music");
+	for(QString fileName:fileNames){
+		MusicObject obj;
+		obj.path=fileName;
+		mPlayer->addMusic(obj);
+		mPlayer->asyncLoadInfo(mPlayer->playlist().size()-1);
+		mPlayer->asyncLoadPicture(mPlayer->playlist().size()-1);
+	}
+	mPlayer->playAt(mPlayer->playlist().size()-1);
 }
 
-void MainWindow::onCurrentIndexChanged()
+void MainWindow::onCurrentIndexChanged(int index)
 {
-	QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer.currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
-	QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer.currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
-	ui->titleLabel->setText(title);
-	ui->artistLabel->setText(artist);
-	ui->pictureLabel->setPixmap(QPixmap::fromImage(mPlayer.currentMusic().picture).scaled(ui->pictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
+	if(index==-1){
+		ui->titleLabel->setText(QString());
+		ui->artistLabel->setText(QString());
+		ui->pictureLabel->setPixmap(QPixmap());
+	}else{
+		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
+		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
+		ui->titleLabel->setText(title);
+		ui->artistLabel->setText(artist);
+		ui->pictureLabel->setPixmap(QPixmap::fromImage(mPlayer->currentMusic().picture).scaled(ui->pictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
+	}
 	ui->posSlider->setRange(0,0);
 	ui->posSlider->setValue(0);
 }
 
 void MainWindow::onLoadedInfo(int index)
 {
-	if(index==mPlayer.currentIndex()){
-		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer.currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
-		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer.currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
+	if(index==mPlayer->currentIndex()){
+		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
+		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
 		ui->titleLabel->setText(title);
 		ui->artistLabel->setText(artist);
 	}
@@ -102,19 +97,19 @@ void MainWindow::onLoadedInfo(int index)
 
 void MainWindow::onLoadedPicture(int index)
 {
-	if(index==mPlayer.currentIndex()){
-		ui->pictureLabel->setPixmap(QPixmap::fromImage(mPlayer.currentMusic().picture).scaled(ui->pictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
+	if(index==mPlayer->currentIndex()){
+		ui->pictureLabel->setPixmap(QPixmap::fromImage(mPlayer->currentMusic().picture).scaled(ui->pictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
 	}
 }
 
 void MainWindow::onClickedPlay()
 {
-	if(mPlayer.isPlaying()){
-		mPlayer.pause(!mPlayer.isPaused());
+	if(mPlayer->isPlaying()){
+		mPlayer->pause(!mPlayer->isPaused());
 	}else{
-		mPlayer.play();
+		mPlayer->play();
 	}
-	ui->playButton->setProperty("is_playing",!mPlayer.isPaused()&&mPlayer.isPlaying());
+	ui->playButton->setProperty("is_playing",!mPlayer->isPaused()&&mPlayer->isPlaying());
 	ui->playButton->style()->unpolish(ui->playButton);
 	ui->playButton->style()->polish(ui->playButton);
 	ui->playButton->update();
@@ -122,13 +117,13 @@ void MainWindow::onClickedPlay()
 
 void MainWindow::onVolumeSliderValueChanged(int value)
 {
-	mPlayer.audio()->setVolume(qreal(value)/100);
+	mPlayer->audio()->setVolume(qreal(value)/100);
 }
 
 void MainWindow::onClickedPlaybackMode()
 {
-	mPlayer.setPlaybackMode(mPlayer.playbackMode() != Random ? PlaybackMode(mPlayer.playbackMode()+1) : Loop);
-	switch (mPlayer.playbackMode()) {
+	mPlayer->setPlaybackMode(mPlayer->playbackMode() != Random ? PlaybackMode(mPlayer->playbackMode()+1) : Loop);
+	switch (mPlayer->playbackMode()) {
 		case Loop:
 			ui->playbackModeButton->setProperty("playbackmode","loop");
 			break;
@@ -164,13 +159,13 @@ void MainWindow::popupPlaylistMenu()
 
 void MainWindow::onPosSliderPressed()
 {
-	mPlayer.audio()->close();
-	mPlayer.audio()->clear();
+	mPlayer->audio()->close();
+	mPlayer->audio()->clear();
 }
 
 void MainWindow::onStateChanged()
 {
-	ui->playButton->setProperty("is_playing",(!mPlayer.isPaused()&&mPlayer.isPlaying())||mPlayer.canPlayback());
+	ui->playButton->setProperty("is_playing",(!mPlayer->isPaused()&&mPlayer->isPlaying())||mPlayer->canPlayback());
 	ui->playButton->style()->unpolish(ui->playButton);
 	ui->playButton->style()->polish(ui->playButton);
 	ui->playButton->update();
@@ -178,8 +173,8 @@ void MainWindow::onStateChanged()
 
 void MainWindow::onPosSliderReleased()
 {
-	if(mPlayer.currentIndex()!=-1)
-		mPlayer.audio()->open();
+	if(mPlayer->currentIndex()!=-1)
+		mPlayer->audio()->open();
 }
 
 int MainWindow::footerY()
@@ -197,8 +192,8 @@ void MainWindow::paintEvent(QPaintEvent* e)
 
 void MainWindow::resizeEvent(QResizeEvent* e)
 {
-	if(!mPlayer.playlist().isEmpty())
-		ui->pictureLabel->setPixmap(QPixmap::fromImage(mPlayer.currentMusic().picture).scaled(ui->pictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
+	if(!mPlayer->playlist().isEmpty())
+		ui->pictureLabel->setPixmap(QPixmap::fromImage(mPlayer->currentMusic().picture).scaled(ui->pictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
 }
 
 MainWindow::~MainWindow()

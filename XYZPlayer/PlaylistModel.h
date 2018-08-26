@@ -6,6 +6,7 @@
 
 class PlaylistModel : public QAbstractTableModel
 {
+	Q_OBJECT
 public:
 	PlaylistModel(QObject* parent=nullptr);
 

@@ -22,7 +22,7 @@ class MusicPlayer : public QtAV::AVPlayer
 {
 	Q_OBJECT
 public:
-	MusicPlayer();
+	MusicPlayer(QObject* parent=nullptr);
 
 	QList<MusicObject> playlist() const;
 	void setPlaylist(const QList<MusicObject>& playlist);
@@ -38,6 +38,8 @@ public:
 	void addMusic(const MusicObject& obj);
 	void addMusicToCurrent(const MusicObject& obj);
 
+	void removeMusic(int index);
+
 	void playAt(int index);
 	void playNext();
 	void playPrev();
@@ -52,6 +54,7 @@ public:
 	void asyncLoadPicture(int index);
 signals:
 	void currentIndexChanged(int index);
+	void playlistElementsChanged();
 	void loadedInfo(int index);
 	void loadedPicture(int index);
 private:

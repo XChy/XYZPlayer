@@ -1,8 +1,10 @@
 #include "MusicPlayer.h"
 #include <QDebug>
 
-MusicPlayer::MusicPlayer()
-	:mCurrentIndex(-1),
+
+MusicPlayer::MusicPlayer(QObject* parent)
+	:QtAV::AVPlayer(parent),
+	  mCurrentIndex(-1),
 	  mPlaybackMode(Loop)
 {
 	connect(this,&MusicPlayer::mediaStatusChanged,this,&MusicPlayer::onMediaStatusChanged);
@@ -37,7 +39,11 @@ int MusicPlayer::currentIndex() const
 void MusicPlayer::setCurrentIndex(int currentIndex)
 {
 	mCurrentIndex = currentIndex;
-	setFile(currentMusic().path);
+	if(mCurrentIndex!=-1){
+		setFile(currentMusic().path);
+	}else{
+		setFile(QString());
+	}
 	emit currentIndexChanged(currentIndex);
 }
 
@@ -49,12 +55,30 @@ MusicObject& MusicPlayer::currentMusic()
 void MusicPlayer::addMusic(const MusicObject& obj)
 {
 	mPlaylist.append(obj);
+	emit playlistElementsChanged();
 }
 
 void MusicPlayer::addMusicToCurrent(const MusicObject& obj)
 {
 	addMusic(obj);
+	emit playlistElementsChanged();
 	setCurrentIndex(mPlaylist.size()-1);
+}
+
+void MusicPlayer::removeMusic(int index)
+{
+	if(mCurrentIndex==index){
+		if(mPlaylist.size()==1){
+			setCurrentIndex(-1);
+			stop();
+		}else{
+			playNext();
+		}
+	}else if(index<mCurrentIndex){
+		--mCurrentIndex;
+	}
+	mPlaylist.removeAt(index);
+	emit playlistElementsChanged();
 }
 
 void MusicPlayer::playAt(int index)
@@ -68,6 +92,8 @@ void MusicPlayer::playNext()
 {
 	if(!mPlaylist.isEmpty()){
 		playAt( mCurrentIndex!=mPlaylist.size()-1 ? mCurrentIndex+1 : 0 );
+	}else{
+		setCurrentIndex(-1);
 	}
 }
 
@@ -75,6 +101,8 @@ void MusicPlayer::playPrev()
 {
 	if(!mPlaylist.isEmpty()){
 		playAt( mCurrentIndex!=0 ? mCurrentIndex-1 : mPlaylist.size()-1 );
+	}else{
+		setCurrentIndex(-1);
 	}
 }
 
@@ -163,8 +191,6 @@ void MusicPlayer::loadPicture(int index)
 			//使用QImage读取完整图片数据（注意，图片数据是为解析的文件数据，需要用QImage::fromdata来解析读取）
 			mPlaylist[index].picture = QImage::fromData((uchar*)pkt.data, pkt.size);
 			break;
-		}else if(fmt_ctx->streams[i]->disposition & AV_DISPOSITION_LYRICS){
-			qDebug()<<"good";
 		}
 	}
 

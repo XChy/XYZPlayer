@@ -4,12 +4,20 @@
 #include <QTableView>
 #include <QHeaderView>
 #include <QMenu>
-#include <XYZPlayer/MusicPlayer.h>
+#include <QApplication>
+#include <QClipboard>
+#include <XYZPlayer/PlaylistModel.h>
 
 class PlaylistView : public QTableView
 {
+	Q_OBJECT
 public:
 	PlaylistView(QWidget* parent=nullptr);
+
+	void contextMenuEvent(QContextMenuEvent *e);
+public slots:
+	void setModel(PlaylistModel* model);
+	PlaylistModel* model();
 private:
 	QMenu* mPopupMenu;
 };

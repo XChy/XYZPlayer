@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 					"border: 1px solid #b2b2b2;"
 					"margin: 0 -8px;"
 					"}"
-					"#PlaylistView{"
+					"PlaylistView{"
 					"color: black;"
 					"qproperty-showGrid:false;"
 					"qproperty-alternatingRowColors:true;"

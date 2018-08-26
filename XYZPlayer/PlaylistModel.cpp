@@ -1,7 +1,9 @@
 #include "PlaylistModel.h"
+#include <QDebug>
 
 PlaylistModel::PlaylistModel(QObject* parent)
-	:QAbstractTableModel(parent)
+	:QAbstractTableModel(parent),
+	  mPlayer(nullptr)
 {
 
 }
@@ -19,6 +21,9 @@ int PlaylistModel::columnCount(const QModelIndex& parent) const
 QVariant PlaylistModel::data(const QModelIndex& index, int role) const
 {
 	if(role==Qt::DisplayRole){
+		if(index.column()<0||index.column()>columnCount()-1||index.row()<0||index.row()>rowCount()-1){
+			return QVariant();
+		}
 		switch(index.column()){
 			case 0:
 				return mPlayer->currentIndex()==index.row();
@@ -51,6 +56,13 @@ MusicPlayer* PlaylistModel::player() const
 
 void PlaylistModel::setPlayer(MusicPlayer* player)
 {
-	connect(player,&MusicPlayer::currentIndexChanged,this,&PlaylistModel::refresh);
+	if(player){
+		connect(player,&MusicPlayer::currentIndexChanged,this,&PlaylistModel::refresh);
+		connect(player,&MusicPlayer::playlistElementsChanged,this,&PlaylistModel::refresh);
+	}
+	if(mPlayer){
+		disconnect(mPlayer,&MusicPlayer::currentIndexChanged,this,&PlaylistModel::refresh);
+		disconnect(mPlayer,&MusicPlayer::playlistElementsChanged,this,&PlaylistModel::refresh);
+	}
 	mPlayer = player;
 }

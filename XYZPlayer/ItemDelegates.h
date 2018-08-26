@@ -4,6 +4,7 @@
 #include <QItemDelegate>
 #include <QPainter>
 #include <QTime>
+#include <QImageReader>
 
 class PlayingItemDelegate : public QItemDelegate
 {

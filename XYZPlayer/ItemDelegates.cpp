@@ -52,6 +52,18 @@ DurationItemDelegate::DurationItemDelegate(QObject* parent)
 
 void DurationItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
+	drawBackground(painter,option,index);
+	painter->setRenderHint(QPainter::TextAntialiasing);
+	painter->setPen(QColor(0x50,0x50,0x50));
+	painter->setFont(QFont("微软雅黑"));
+	QTextOption textOption;
+	textOption.setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
+
 	int64_t duration=index.data().toLongLong();
-	drawDisplay(painter,option,option.rect,QTime(0,0).addSecs(duration/1000000).toString("m:ss"));
+
+	painter->drawText(option.rect,TitleItemDelegate::elidedText(
+						  painter->fontMetrics(),
+						  option.rect.width(),Qt::ElideRight,
+						  QTime(0,0).addSecs(duration/1000000).toString("m:ss")),
+					  textOption);
 }

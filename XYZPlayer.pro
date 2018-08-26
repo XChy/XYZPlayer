@@ -33,7 +33,8 @@ SOURCES += \
     XYZPlayer/MusicObject.cpp \
     XYZPlayer/PlaylistView.cpp \
     XYZPlayer/ItemDelegates.cpp \
-    XYZPlayer/PlaylistModel.cpp
+    XYZPlayer/PlaylistModel.cpp \
+    XYZPlayer/PlaylistWidget.cpp
 
 HEADERS += \
 	XYZPlayer/MainWindow.h \
@@ -41,7 +42,8 @@ HEADERS += \
     XYZPlayer/MusicObject.h \
     XYZPlayer/PlaylistView.h \
     XYZPlayer/ItemDelegates.h \
-    XYZPlayer/PlaylistModel.h
+    XYZPlayer/PlaylistModel.h \
+    XYZPlayer/PlaylistWidget.h
 
 FORMS += \
 	XYZPlayer/MainWindow.ui
