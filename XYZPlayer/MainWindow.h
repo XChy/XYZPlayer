@@ -24,6 +24,8 @@ public:
 	void resizeEvent(QResizeEvent* e);
 	~MainWindow();
 
+	MusicPlayer* player() const;
+
 private slots:
 	void onClickedOpen();
 	void onCurrentIndexChanged(int index);

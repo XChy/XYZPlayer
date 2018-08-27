@@ -8,11 +8,21 @@ PlaylistWidget::PlaylistWidget(QWidget *parent) :
 	mModel(new PlaylistModel(this))
 {
 	QLabel* title=new QLabel(tr("Playlist"),this);
+	title->setObjectName("PlaylistTitle");
+	title->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
 	title->move(0,0);
-	title->setFixedSize(300,25);
-	mView->move(0,25);
-	mView->setFixedSize(300,375);
+	title->setFixedSize(300,headerY());
+	mView->move(0,headerY());
+	mView->setFixedSize(300,400-headerY());
 	setFixedSize(300,400);
+}
+
+void PlaylistWidget::paintEvent(QPaintEvent* e)
+{
+	QPainter painter(this);
+	painter.setPen(QPen(QColor(0xb2,0xb2,0xb2),200));
+	int y = headerY();
+	painter.drawLine(0,y,width(),y);
 }
 
 void PlaylistWidget::setPlayer(MusicPlayer* player)
@@ -29,4 +39,9 @@ void PlaylistWidget::setPlayer(MusicPlayer* player)
 	mView->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
 	mView->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
 	mView->horizontalHeader()->setSectionResizeMode(3,QHeaderView::Fixed);
+}
+
+int PlaylistWidget::headerY()
+{
+	return 25;
 }

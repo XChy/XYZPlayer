@@ -57,7 +57,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::onClickedOpen()
 {
-	QStringList fileNames=QFileDialog::getOpenFileNames(this,"Add Music");
+	QStringList fileNames=QFileDialog::getOpenFileNames(this,tr("Add Music"));
 	for(QString fileName:fileNames){
 		MusicObject obj;
 		obj.path=fileName;
@@ -177,6 +177,11 @@ void MainWindow::onPosSliderReleased()
 		mPlayer->audio()->open();
 }
 
+MusicPlayer* MainWindow::player() const
+{
+	return mPlayer;
+}
+
 int MainWindow::footerY()
 {
 	return height()-ui->playButton->height()-15;
@@ -187,7 +192,7 @@ void MainWindow::paintEvent(QPaintEvent* e)
 	QPainter painter(this);
 	painter.setPen(QColor(0xb2,0xb2,0xb2));
 	int y = footerY();
-	painter.drawLine(QPoint(3,y),QPoint(width()-3,y));
+	painter.drawLine(3,y,width()-3,y);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* e)

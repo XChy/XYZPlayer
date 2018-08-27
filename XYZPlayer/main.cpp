@@ -1,9 +1,13 @@
 #include "MainWindow.h"
 #include <QApplication>
+#include <QTranslator>
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
+	QTranslator translator;
+	translator.load("zh_CN");
+	a.installTranslator(&translator);
 	MainWindow w;
 	a.setStyleSheet("QMenu{"
 					"background-color:white;"
@@ -58,7 +62,12 @@ int main(int argc, char *argv[])
 					"}"
 					"#titleLabel{"
 					"font-size:13px;"
-					"color:black"
+					"color:black;"
+					"}"
+					"#PlaylistTitle{"
+					"font-size:15px;"
+					"color:black;"
+					"background-color:rgb(244,244,244);"
 					"}"
 					"QMenu::item{"
 					"color:black;"
@@ -138,10 +147,22 @@ int main(int argc, char *argv[])
 					"selection-color:black;"
 					"selection-background-color:#cccccc;"
 					"border-radius: 0px;"
-					"padding: 2px 4px;}"
+					"padding: 2px 4px;"
+					"}"
 					"QTabWidget:tab-bar{"
 					"border-color:white;"
-					"}");
+					"}"
+					);
+	while(--argc){
+		MusicObject obj;
+		obj.path=QString::fromLocal8Bit(argv[argc]);
+		w.player()->addMusic(obj);
+		w.player()->asyncLoadInfo(w.player()->playlist().size()-1);
+		w.player()->asyncLoadPicture(w.player()->playlist().size()-1);
+	}
+	if(!w.player()->playlist().isEmpty()){
+		w.player()->playAt(w.player()->playlist().size()-1);
+	}
 	w.show();
 	return a.exec();
 }

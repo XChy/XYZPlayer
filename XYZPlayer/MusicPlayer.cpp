@@ -73,6 +73,9 @@ void MusicPlayer::removeMusic(int index)
 			stop();
 		}else{
 			playNext();
+			if(mCurrentIndex){
+				--mCurrentIndex;
+			}
 		}
 	}else if(index<mCurrentIndex){
 		--mCurrentIndex;
@@ -160,8 +163,13 @@ void MusicPlayer::loadInfo(int index)
 	mPlaylist[index].duration=fmt_ctx->duration;
 	//读取metadata中所有的tag
 	while ((tag = av_dict_get(fmt_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))){
-		mPlaylist[index].infoTags[tag->key]=tag->value;
+		mPlaylist[index].infoTags[QString(tag->key).toLower()]=tag->value;
 	}
+
+	if(!mPlaylist[index].infoTags.contains("title")){
+		mPlaylist[index].infoTags["title"]=QFileInfo(mPlaylist[index].path).baseName();
+	}
+
 	avformat_close_input(&fmt_ctx);
 	avformat_free_context(fmt_ctx);
 	emit loadedInfo(index);

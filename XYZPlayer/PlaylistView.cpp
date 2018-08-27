@@ -7,27 +7,29 @@ PlaylistView::PlaylistView(QWidget* parent)
 	verticalHeader()->setVisible(false);
 	horizontalHeader()->setVisible(false);
 
-	mPopupMenu->addAction("play",[&](){
+	mPopupMenu->addAction(tr("play"),[&](){
 		model()->player()->playAt(selectionModel()->currentIndex().row());
 	});
-	mPopupMenu->addAction("copy title",[&](){
+	mPopupMenu->addAction(tr("copy title"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["title"]
 					);
 	});
-	mPopupMenu->addAction("copy artist",[&](){
+	mPopupMenu->addAction(tr("copy artist"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["artist"]
 					);
 	});
-	mPopupMenu->addAction("copy album",[&](){
+	mPopupMenu->addAction(tr("copy album"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["album"]
 					);
 	});
-	mPopupMenu->addAction("remove",[&](){
+	mPopupMenu->addAction(tr("remove"),[&](){
+		int offset=0;
 		for(QModelIndex& index:selectionModel()->selectedRows()){
-			model()->player()->removeMusic(index.row());
+			model()->player()->removeMusic(index.row()-offset);
+			++offset;
 		}
 	});
 

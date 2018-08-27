@@ -18,11 +18,15 @@ class PlaylistWidget : public QWidget
 public:
 	explicit PlaylistWidget(QWidget *parent = 0);
 
+	void paintEvent(QPaintEvent* e);
+
 	void setPlayer(MusicPlayer* player);
 
 private:
 	PlaylistView* mView;
 	PlaylistModel* mModel;
+
+	int headerY();
 };
 
 #endif // PLAYLISTWIDGET_H

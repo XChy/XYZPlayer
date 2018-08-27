@@ -9,6 +9,7 @@ extern "C"{
 #include <QThreadPool>
 #include <QList>
 #include <QRunnable>
+#include <QFileInfo>
 #include <XYZPlayer/MusicObject.h>
 
 enum PlaybackMode{
