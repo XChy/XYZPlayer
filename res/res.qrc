@@ -4,16 +4,11 @@
         <file>images/easy/loop.png</file>
         <file>images/easy/mute.png</file>
         <file>images/easy/next.png</file>
-        <file>images/easy/noselected-localmusic.png</file>
-        <file>images/easy/noselected-playingmusic.png</file>
         <file>images/easy/pause.png</file>
         <file>images/easy/play.png</file>
         <file>images/easy/playing.png</file>
-        <file>images/easy/playlistbutton.png</file>
         <file>images/easy/previous.png</file>
         <file>images/easy/random.png</file>
-        <file>images/easy/selected-localmusic.png</file>
-        <file>images/easy/selected-playingmusic.png</file>
         <file>images/easy/sequential.png</file>
         <file>images/easy/volume.png</file>
     </qresource>

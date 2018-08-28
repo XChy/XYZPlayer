@@ -40,7 +40,7 @@ void MusicPlayer::setCurrentIndex(int currentIndex)
 {
 	mCurrentIndex = currentIndex;
 	if(mCurrentIndex!=-1){
-		setFile(currentMusic().path);
+		setFile(currentMusic().d->path);
 	}else{
 		setFile(QString());
 	}
@@ -63,6 +63,15 @@ void MusicPlayer::addMusicToCurrent(const MusicObject& obj)
 	addMusic(obj);
 	emit playlistElementsChanged();
 	setCurrentIndex(mPlaylist.size()-1);
+}
+
+void MusicPlayer::insertMusic(int index,const MusicObject& obj)
+{
+	mPlaylist.insert(index,obj);
+	if(index<mCurrentIndex){
+		++mCurrentIndex;
+	}
+	emit playlistElementsChanged();
 }
 
 void MusicPlayer::removeMusic(int index)
@@ -146,65 +155,20 @@ bool MusicPlayer::canPlayback()
 
 void MusicPlayer::loadInfo(int index)
 {
-	AVFormatContext *fmt_ctx = NULL;
-	AVDictionaryEntry *tag = NULL;
-	int ret;
-
-	av_register_all();
-
-	if ((ret = avformat_open_input(&fmt_ctx, mPlaylist[index].path.toLocal8Bit(), NULL, NULL))){
-		char buffer[128];
-		av_strerror(ret,buffer,sizeof(buffer));
-		printf("Fail to open file at loadInfo AVError:%s\n",buffer);
-		return;
-	}
-
-	avformat_find_stream_info(fmt_ctx, NULL);
-	mPlaylist[index].duration=fmt_ctx->duration;
-	//读取metadata中所有的tag
-	while ((tag = av_dict_get(fmt_ctx->metadata, "", tag, AV_DICT_IGNORE_SUFFIX))){
-		mPlaylist[index].infoTags[QString(tag->key).toLower()]=tag->value;
-	}
-
-	if(!mPlaylist[index].infoTags.contains("title")){
-		mPlaylist[index].infoTags["title"]=QFileInfo(mPlaylist[index].path).baseName();
-	}
-
-	avformat_close_input(&fmt_ctx);
-	avformat_free_context(fmt_ctx);
+	MusicUtil::loadInfo(mPlaylist[index]);
 	emit loadedInfo(index);
 }
 
 void MusicPlayer::loadPicture(int index)
 {
-	AVFormatContext *fmt_ctx = NULL;
-	int ret;
-
-	av_register_all();
-
-	if ((ret = avformat_open_input(&fmt_ctx,mPlaylist[index].path.toLocal8Bit(), NULL, NULL))){
-		char buffer[128];
-		av_strerror(ret,buffer,sizeof(buffer));
-		printf("Fail to open file at loadPicture AVError:%s\n",buffer);
-		return;
-	}
-	if (fmt_ctx->iformat->read_header(fmt_ctx) < 0) {
-		printf("No header format");
-		return;
-	}
-
-	for (int i = 0; i < fmt_ctx->nb_streams; i++){
-		if (fmt_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
-			AVPacket pkt = fmt_ctx->streams[i]->attached_pic;
-			//使用QImage读取完整图片数据（注意，图片数据是为解析的文件数据，需要用QImage::fromdata来解析读取）
-			mPlaylist[index].picture = QImage::fromData((uchar*)pkt.data, pkt.size);
-			break;
-		}
-	}
-
-	avformat_close_input(&fmt_ctx);
-	avformat_free_context(fmt_ctx);
+	MusicUtil::loadPicture(mPlaylist[index]);
 	emit loadedPicture(index);
+}
+
+void MusicPlayer::loadLyrics(int index)
+{
+	MusicUtil::loadLyrics(mPlaylist[index]);
+	emit loadedLyrics(index);
 }
 
 void MusicPlayer::asyncLoadInfo(int index)
@@ -232,6 +196,23 @@ void MusicPlayer::asyncLoadPicture(int index)
 			:mPlayer(player),mIndex(index){}
 		void run(){
 			mPlayer->loadPicture(mIndex);
+		}
+		MusicPlayer* mPlayer;
+		int mIndex;
+	};
+	Runnable* runnable=new Runnable(this,index);
+	runnable->setAutoDelete(true);
+	QThreadPool::globalInstance()->start(runnable);
+}
+
+void MusicPlayer::asyncLoadLyrics(int index)
+{
+	class Runnable:public QRunnable{
+	public:
+		Runnable(MusicPlayer* player,int index)
+			:mPlayer(player),mIndex(index){}
+		void run(){
+			mPlayer->loadLyrics(mIndex);
 		}
 		MusicPlayer* mPlayer;
 		int mIndex;

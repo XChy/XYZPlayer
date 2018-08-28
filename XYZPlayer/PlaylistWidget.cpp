@@ -1,28 +1,22 @@
 #include "PlaylistWidget.h"
-#include "ui_PlaylistWidget.h"
 #include <QDebug>
 
 PlaylistWidget::PlaylistWidget(QWidget *parent) :
 	QWidget(parent),
 	mView(new PlaylistView(this)),
+	mTitle(new QLabel(tr("Playlist"),this)),
 	mModel(new PlaylistModel(this))
 {
-	QLabel* title=new QLabel(tr("Playlist"),this);
-	title->setObjectName("PlaylistTitle");
-	title->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
-	title->move(0,0);
-	title->setFixedSize(300,headerY());
-	mView->move(0,headerY());
-	mView->setFixedSize(300,400-headerY());
-	setFixedSize(300,400);
+	mTitle->setObjectName("PlaylistTitle");
+	mTitle->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
+	mTitle->move(0,0);
 }
 
-void PlaylistWidget::paintEvent(QPaintEvent* e)
+void PlaylistWidget::resizeEvent(QResizeEvent* e)
 {
-	QPainter painter(this);
-	painter.setPen(QPen(QColor(0xb2,0xb2,0xb2),200));
-	int y = headerY();
-	painter.drawLine(0,y,width(),y);
+	mTitle->setFixedSize(width(),headerY());
+	mView->move(0,headerY());
+	mView->setFixedSize(width(),height()-headerY());
 }
 
 void PlaylistWidget::setPlayer(MusicPlayer* player)

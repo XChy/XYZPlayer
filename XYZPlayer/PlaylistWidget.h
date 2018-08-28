@@ -2,6 +2,7 @@
 #define PLAYLISTWIDGET_H
 
 #include <QLabel>
+#include <QGraphicsEffect>
 #include <XYZPlayer/MusicPlayer.h>
 #include <XYZPlayer/PlaylistModel.h>
 #include <XYZPlayer/PlaylistView.h>
@@ -18,13 +19,14 @@ class PlaylistWidget : public QWidget
 public:
 	explicit PlaylistWidget(QWidget *parent = 0);
 
-	void paintEvent(QPaintEvent* e);
+	void resizeEvent(QResizeEvent* e);
 
 	void setPlayer(MusicPlayer* player);
 
 private:
 	PlaylistView* mView;
 	PlaylistModel* mModel;
+	QLabel* mTitle;
 
 	int headerY();
 };

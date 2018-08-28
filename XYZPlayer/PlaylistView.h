@@ -15,6 +15,7 @@ public:
 	PlaylistView(QWidget* parent=nullptr);
 
 	void contextMenuEvent(QContextMenuEvent *e);
+	void mouseDoubleClickEvent(QMouseEvent* e);
 public slots:
 	void setModel(PlaylistModel* model);
 	PlaylistModel* model();

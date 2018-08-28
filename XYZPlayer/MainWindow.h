@@ -6,6 +6,7 @@
 #include <QWidgetAction>
 #include <QFileDialog>
 #include <QSlider>
+#include <QToolTip>
 #include <XYZPlayer/MusicPlayer.h>
 #include <XYZPlayer/PlaylistWidget.h>
 #include <XYZPlayer/ItemDelegates.h>
@@ -20,22 +21,19 @@ class MainWindow : public QMainWindow
 
 public:
 	explicit MainWindow(QWidget *parent = 0);
-	void paintEvent(QPaintEvent* e);
-	void resizeEvent(QResizeEvent* e);
 	~MainWindow();
 
 	MusicPlayer* player() const;
 
+	bool eventFilter(QObject *watched, QEvent *event);
 private slots:
-	void onClickedOpen();
+	void on_clicked_Open();
 	void onCurrentIndexChanged(int index);
 	void onLoadedInfo(int index);
-	void onLoadedPicture(int index);
-	void onClickedPlay();
+	void on_clicked_playButton();
 	void onVolumeSliderValueChanged(int value);
-	void onClickedPlaybackMode();
-	void popupVolumeMenu();
-	void popupPlaylistMenu();
+	void on_clicked_PlaybackModeButton();
+	void on_clicked_VolumeButton();
 	void onPosSliderPressed();
 	void onStateChanged();
 	void onPosSliderReleased();
@@ -45,11 +43,6 @@ private:
 	MusicPlayer* mPlayer;
 	QSlider* mVolumeSlider;
 	QMenu* mVolumeMenu;
-
-	PlaylistWidget* mPlaylistWidget;
-	QMenu* mPlaylistMenu;
-
-	int footerY();
 };
 
 #endif // MAINWINDOW_H

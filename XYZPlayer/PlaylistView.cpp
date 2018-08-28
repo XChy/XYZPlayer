@@ -2,30 +2,34 @@
 
 PlaylistView::PlaylistView(QWidget* parent)
 	:QTableView(parent)
-	  ,mPopupMenu(new QMenu(this))
+	,mPopupMenu(new QMenu(this))
 {
+	setDragDropMode(QAbstractItemView::DragDrop);
+	setDragEnabled(true);
+	setDropIndicatorShown(true);
+
 	verticalHeader()->setVisible(false);
 	horizontalHeader()->setVisible(false);
 
-	mPopupMenu->addAction(tr("play"),[&](){
+	mPopupMenu->addAction(tr("Play"),[&](){
 		model()->player()->playAt(selectionModel()->currentIndex().row());
 	});
-	mPopupMenu->addAction(tr("copy title"),[&](){
+	mPopupMenu->addAction(tr("Copy title"),[&](){
 		QApplication::clipboard()->setText(
-					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["title"]
-					);
+					model()->player()->playlist()[selectionModel()->currentIndex().row()].d->infoTags["title"]
+				);
 	});
-	mPopupMenu->addAction(tr("copy artist"),[&](){
+	mPopupMenu->addAction(tr("Copy artist"),[&](){
 		QApplication::clipboard()->setText(
-					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["artist"]
-					);
+					model()->player()->playlist()[selectionModel()->currentIndex().row()].d->infoTags["artist"]
+				);
 	});
-	mPopupMenu->addAction(tr("copy album"),[&](){
+	mPopupMenu->addAction(tr("Copy album"),[&](){
 		QApplication::clipboard()->setText(
-					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["album"]
-					);
+					model()->player()->playlist()[selectionModel()->currentIndex().row()].d->infoTags["album"]
+				);
 	});
-	mPopupMenu->addAction(tr("remove"),[&](){
+	mPopupMenu->addAction(tr("Remove"),[&](){
 		int offset=0;
 		for(QModelIndex& index:selectionModel()->selectedRows()){
 			model()->player()->removeMusic(index.row()-offset);
@@ -38,7 +42,7 @@ PlaylistView::PlaylistView(QWidget* parent)
 
 void PlaylistView::contextMenuEvent(QContextMenuEvent* e)
 {
-	QPoint pos=mapFromParent(e->pos());
+	QPoint pos=e->pos();
 	QModelIndex index=indexAt(pos);
 	if(index.isValid()){
 		if(selectionModel()->hasSelection()){
@@ -52,6 +56,14 @@ void PlaylistView::contextMenuEvent(QContextMenuEvent* e)
 			mPopupMenu->exec(e->globalPos());
 			e->accept();
 		}
+	}
+}
+
+void PlaylistView::mouseDoubleClickEvent(QMouseEvent* e)
+{
+	QModelIndex index=indexAt(e->pos());
+	if(index.isValid()){
+		model()->player()->playAt(index.row());
 	}
 }
 

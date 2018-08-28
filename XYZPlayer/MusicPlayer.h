@@ -1,16 +1,13 @@
 #ifndef MUSICPLAYER_H
 #define MUSICPLAYER_H
 
-extern "C"{
-#include <libavformat/avformat.h>
-}
-
 #include <QtAV/QtAV>
 #include <QThreadPool>
 #include <QList>
 #include <QRunnable>
 #include <QFileInfo>
 #include <XYZPlayer/MusicObject.h>
+#include <XYZPlayer/MusicUtil.h>
 
 enum PlaybackMode{
 	Loop,
@@ -39,6 +36,8 @@ public:
 	void addMusic(const MusicObject& obj);
 	void addMusicToCurrent(const MusicObject& obj);
 
+	void insertMusic(int index, const MusicObject& obj);
+
 	void removeMusic(int index);
 
 	void playAt(int index);
@@ -47,17 +46,20 @@ public:
 
 	void playback();
 	bool canPlayback();
-
+public slots:
 	void loadInfo(int index);
 	void loadPicture(int index);
+	void loadLyrics(int index);
 
 	void asyncLoadInfo(int index);
 	void asyncLoadPicture(int index);
+	void asyncLoadLyrics(int index);
 signals:
 	void currentIndexChanged(int index);
 	void playlistElementsChanged();
 	void loadedInfo(int index);
 	void loadedPicture(int index);
+	void loadedLyrics(int index);
 private:
 	void onMediaStatusChanged(QtAV::MediaStatus state);
 private:

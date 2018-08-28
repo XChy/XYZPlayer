@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = XYZPlayer
 TEMPLATE = app
 
+#QtAV path
 INCLUDEPATH+=D:\Library-Cpp\QtAV_lib\include
 LIBS+=-L D:\Library-Cpp\QtAV_lib\lib\ -lavcodec -lavdevice -lavfilter -lavformat -lavresample  -lavutil -lQtAV1 -lswresample -lswscale
 
@@ -25,7 +26,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-
 SOURCES += \
 	XYZPlayer/main.cpp \
 	XYZPlayer/MainWindow.cpp \
@@ -34,7 +34,11 @@ SOURCES += \
     XYZPlayer/PlaylistView.cpp \
     XYZPlayer/ItemDelegates.cpp \
     XYZPlayer/PlaylistModel.cpp \
-    XYZPlayer/PlaylistWidget.cpp
+    XYZPlayer/PlaylistWidget.cpp \
+    XYZPlayer/BioWidget.cpp \
+    XYZPlayer/MusicUtil.cpp \
+    XYZPlayer/LyricsWidget.cpp \
+    XYZPlayer/LyricsModel.cpp
 
 HEADERS += \
 	XYZPlayer/MainWindow.h \
@@ -43,7 +47,11 @@ HEADERS += \
     XYZPlayer/PlaylistView.h \
     XYZPlayer/ItemDelegates.h \
     XYZPlayer/PlaylistModel.h \
-    XYZPlayer/PlaylistWidget.h
+    XYZPlayer/PlaylistWidget.h \
+    XYZPlayer/BioWidget.h \
+    XYZPlayer/MusicUtil.h \
+    XYZPlayer/LyricsWidget.h \
+    XYZPlayer/LyricsModel.h
 
 FORMS += \
 	XYZPlayer/MainWindow.ui
