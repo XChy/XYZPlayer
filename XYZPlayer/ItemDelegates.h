@@ -38,5 +38,12 @@ public:
 	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
+class LyricItemDelegate : public QItemDelegate
+{
+	Q_OBJECT
+public:
+	LyricItemDelegate(QObject* parent=nullptr);
+	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;//TODO complete it
+};
 
 #endif // ITEMDELEGATES_H

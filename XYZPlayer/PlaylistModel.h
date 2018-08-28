@@ -2,6 +2,7 @@
 #define PLAYLISTMODEL_H
 
 #include <QAbstractTableModel>
+#include <QMimeData>
 #include <XYZPlayer/MusicPlayer.h>
 
 class PlaylistModel : public QAbstractTableModel
@@ -10,14 +11,24 @@ class PlaylistModel : public QAbstractTableModel
 public:
 	PlaylistModel(QObject* parent=nullptr);
 
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
-	int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+	virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+	virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+	virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+
+	virtual Qt::DropActions supportedDropActions() const;
+
+	virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+
+	virtual QStringList mimeTypes() const;
+
+	virtual bool canDropMimeData(const QMimeData *data, Qt::DropAction action,
+								 int row, int column, const QModelIndex &parent) const;
+	virtual bool dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent);
 
 	MusicPlayer* player() const;
 	void setPlayer(MusicPlayer* player);
 
-	bool setData(const QModelIndex& index, const QVariant& v, int role = Qt::EditRole);
+	virtual bool setData(const QModelIndex& index, const QVariant& v, int role = Qt::EditRole);
 public slots:
 	void refresh();
 private:
