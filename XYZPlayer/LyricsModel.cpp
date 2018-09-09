@@ -21,7 +21,7 @@ QVariant LyricsModel::data(const QModelIndex& index, int role) const
 		return mPlayer->currentMusic().d->lyrics.lyricList[index.row()].second;
 	}else if(role==Qt::UserRole){
 		return index.row()==mLyricIndex;
-	}//BUG Maybe
+	}
 	return QVariant();
 }
 

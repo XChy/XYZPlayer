@@ -19,8 +19,6 @@ public:
 	MusicPlayer* player() const;
 	void setPlayer(MusicPlayer* player);
 
-protected slots:
-	void onPositionChanged(int64_t pos);
 private:
 	MusicPlayer* mPlayer;
 	LyricsModel* mModel;

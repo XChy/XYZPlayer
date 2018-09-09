@@ -76,7 +76,7 @@ bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, i
 	for(QUrl url:data->urls()){
 		MusicObject obj;
 		obj.d->path=url.toLocalFile();
-		obj.d->lyrics.path=url.toLocalFile().left(url.toLocalFile().indexOf('.')).append(".lrc");
+		obj.d->lyrics.path=url.toLocalFile().left(url.toLocalFile().lastIndexOf('.')).append(".lrc");
 		mPlayer->insertMusic(insertIndex,obj);
 		mPlayer->asyncLoadInfo(insertIndex);
 		mPlayer->asyncLoadPicture(insertIndex);

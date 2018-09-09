@@ -22,18 +22,7 @@ MusicPlayer* LyricsWidget::player() const
 
 void LyricsWidget::setPlayer(MusicPlayer* player)
 {
-	if(player){
-		connect(player,&MusicPlayer::positionChanged,this,&LyricsWidget::onPositionChanged);
-	}
-	if(mPlayer){
-		disconnect(mPlayer,&MusicPlayer::positionChanged,this,&LyricsWidget::onPositionChanged);
-	}
 	mModel->setPlayer(player);
 	mView->setModel(mModel);
 	mPlayer = player;
-}
-
-void LyricsWidget::onPositionChanged(int64_t pos)
-{
-	mView->update();
 }
