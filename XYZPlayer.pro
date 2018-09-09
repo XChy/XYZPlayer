@@ -64,7 +64,5 @@ RC_ICONS=res/images/logo.ico
 TRANSLATIONS += zh_CN.ts
 
 DISTFILES += \
-    screenshots/main .png \
-    screenshots/main .png \
     screenshots/bio.png \
     screenshots/lyrics.png

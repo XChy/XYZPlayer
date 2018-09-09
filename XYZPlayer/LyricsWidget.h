@@ -18,7 +18,6 @@ public:
 
 	MusicPlayer* player() const;
 	void setPlayer(MusicPlayer* player);
-
 private:
 	MusicPlayer* mPlayer;
 	LyricsModel* mModel;
