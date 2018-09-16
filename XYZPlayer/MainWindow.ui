@@ -87,6 +87,9 @@
              <property name="text">
               <string>Musics</string>
              </property>
+             <property name="textInteractionFlags">
+              <set>Qt::NoTextInteraction</set>
+             </property>
             </widget>
            </item>
            <item>
@@ -234,6 +237,9 @@
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="opaqueResize">
+         <bool>false</bool>
         </property>
         <property name="childrenCollapsible">
          <bool>true</bool>

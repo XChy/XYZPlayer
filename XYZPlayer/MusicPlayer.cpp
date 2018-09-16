@@ -1,16 +1,25 @@
 #include "MusicPlayer.h"
 #include <QDebug>
 
-
 MusicPlayer::MusicPlayer(QObject* parent)
 	:QtAV::AVPlayer(parent),
 	  mCurrentIndex(-1),
-	  mPlaybackMode(Loop)
+	  mPlaybackMode(Loop),
+	  mInfoBeginLoadIndex(0)
 {
+	mInfoLoaderWatcher.setPendingResultsLimit(5);
 	connect(this,&MusicPlayer::mediaStatusChanged,this,&MusicPlayer::onMediaStatusChanged);
+	connect(&mInfoLoaderWatcher,&QFutureWatcher<int>::resultReadyAt,[this](int index){
+		emit infoLoaded(mInfoBeginLoadIndex+index);
+	});
 }
 
 QList<MusicObject> MusicPlayer::playlist() const
+{
+	return mPlaylist;
+}
+
+QList<MusicObject>& MusicPlayer::playlist()
 {
 	return mPlaylist;
 }
@@ -38,13 +47,13 @@ int MusicPlayer::currentIndex() const
 
 void MusicPlayer::setCurrentIndex(int currentIndex)
 {
+	int oldIndex=mCurrentIndex;
 	mCurrentIndex = currentIndex;
+	setFile(QString());
 	if(mCurrentIndex!=-1){
-		setFile(currentMusic().d->path);
-	}else{
-		setFile(QString());
+		setFile(currentMusic().path);
 	}
-	emit currentIndexChanged(currentIndex);
+	emit currentIndexChanged(oldIndex,currentIndex);
 }
 
 MusicObject& MusicPlayer::currentMusic()
@@ -140,7 +149,7 @@ void MusicPlayer::playback()
 	}
 }
 
-bool MusicPlayer::canPlayback()
+bool MusicPlayer::canPlayback() const
 {
 	switch (mPlaybackMode) {
 		case Loop:
@@ -151,24 +160,40 @@ bool MusicPlayer::canPlayback()
 		case Sequential:
 			return mCurrentIndex!=mPlaylist.size()-1;
 	}
+	return false;
 }
 
 void MusicPlayer::loadInfo(int index)
 {
 	MusicUtil::loadInfo(mPlaylist[index]);
-	emit loadedInfo(index);
+	emit infoLoaded(index);
 }
-
 void MusicPlayer::loadPicture(int index)
 {
 	MusicUtil::loadPicture(mPlaylist[index]);
-	emit loadedPicture(index);
+	emit pictureLoaded(index);
 }
 
 void MusicPlayer::loadLyrics(int index)
 {
 	MusicUtil::loadLyrics(mPlaylist[index]);
-	emit loadedLyrics(index);
+	emit lyricsLoaded(index);
+}
+
+void MusicPlayer::unLoadInfo(int index)
+{
+	mPlaylist[index].infoTags.clear();
+	mPlaylist[index].duration=0;
+}
+
+void MusicPlayer::unLoadPicture(int index)
+{
+	mPlaylist[index].picture=QImage();
+}
+
+void MusicPlayer::unLoadLyrics(int index)
+{
+	mPlaylist[index].lyrics.lyricList.clear();
 }
 
 void MusicPlayer::asyncLoadInfo(int index)
@@ -188,38 +213,26 @@ void MusicPlayer::asyncLoadInfo(int index)
 	QThreadPool::globalInstance()->start(runnable);
 }
 
+void MusicPlayer::asyncLoadInfo(int begin, int end)
+{
+	mInfoBeginLoadIndex=begin;
+	mInfoLoaderWatcher.setFuture(QtConcurrent::mapped(mPlaylist.begin()+begin,mPlaylist.begin()+end,MusicUtil::loadInfo));
+}
+
+void MusicPlayer::asyncLoadAllInfo()
+{
+	mInfoBeginLoadIndex=0;
+	mInfoLoaderWatcher.setFuture(QtConcurrent::mapped(mPlaylist.begin(),mPlaylist.end(),MusicUtil::loadInfo));
+}
+
 void MusicPlayer::asyncLoadPicture(int index)
 {
-	class Runnable:public QRunnable{
-	public:
-		Runnable(MusicPlayer* player,int index)
-			:mPlayer(player),mIndex(index){}
-		void run(){
-			mPlayer->loadPicture(mIndex);
-		}
-		MusicPlayer* mPlayer;
-		int mIndex;
-	};
-	Runnable* runnable=new Runnable(this,index);
-	runnable->setAutoDelete(true);
-	QThreadPool::globalInstance()->start(runnable);
+	QtConcurrent::run(this,&MusicPlayer::loadPicture,index);
 }
 
 void MusicPlayer::asyncLoadLyrics(int index)
 {
-	class Runnable:public QRunnable{
-	public:
-		Runnable(MusicPlayer* player,int index)
-			:mPlayer(player),mIndex(index){}
-		void run(){
-			mPlayer->loadLyrics(mIndex);
-		}
-		MusicPlayer* mPlayer;
-		int mIndex;
-	};
-	Runnable* runnable=new Runnable(this,index);
-	runnable->setAutoDelete(true);
-	QThreadPool::globalInstance()->start(runnable);
+	QtConcurrent::run(this,&MusicPlayer::loadLyrics,index);
 }
 
 void MusicPlayer::onMediaStatusChanged(QtAV::MediaStatus state)
@@ -227,6 +240,11 @@ void MusicPlayer::onMediaStatusChanged(QtAV::MediaStatus state)
 	if(state==QtAV::EndOfMedia){
 		playback();
 	}
+}
+
+const QFutureWatcher<int>& MusicPlayer::infoLoaderWatcher() const
+{
+	return mInfoLoaderWatcher;
 }
 
 

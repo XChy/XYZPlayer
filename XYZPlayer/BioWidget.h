@@ -17,7 +17,7 @@ public slots:
 	void setPlayer(MusicPlayer* player);
 protected:
 	void onLoadedPicture(int index);
-	void onCurrentIndexChanged(int index);
+	void onCurrentIndexChanged(int oldIndex,int newIndex);
 private:
 	MusicPlayer* mPlayer;
 	QLabel* mPictureLabel;

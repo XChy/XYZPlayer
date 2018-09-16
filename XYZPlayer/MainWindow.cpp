@@ -36,14 +36,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->OpenAction,&QAction::triggered,this,&MainWindow::on_clicked_Open);
 	connect(mPlayer,&MusicPlayer::currentIndexChanged,this,&MainWindow::onCurrentIndexChanged);
-	connect(mPlayer,&MusicPlayer::loadedInfo,this,&MainWindow::onLoadedInfo,Qt::QueuedConnection);
+	connect(mPlayer,&MusicPlayer::infoLoaded,this,&MainWindow::onInfoLoaded,Qt::QueuedConnection);
 	connect(ui->playButton,&QPushButton::clicked,this,&MainWindow::on_clicked_playButton);
 	connect(mPlayer,&MusicPlayer::stateChanged,this,&MainWindow::onStateChanged);
 	connect(ui->nextButton,&QPushButton::clicked,mPlayer,&MusicPlayer::playNext);
 	connect(ui->prevButton,&QPushButton::clicked,mPlayer,&MusicPlayer::playPrev);
 	connect(mVolumeSlider,&QSlider::valueChanged,this,&MainWindow::onVolumeSliderValueChanged);
 	connect(ui->posSlider,&QSlider::sliderPressed,this,&MainWindow::onPosSliderPressed);
-	connect(ui->posSlider,&QSlider::sliderMoved,mPlayer,&MusicPlayer::setPosition);
+	connect(ui->posSlider,&QSlider::sliderMoved,this,&MainWindow::onPosSliderMoved);
 
 	ui->musicsLabel->installEventFilter(this);
 	ui->bioLabel->installEventFilter(this);
@@ -57,7 +57,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(mPlayer,&MusicPlayer::durationChanged,ui->posSlider,&QSlider::setMaximum);
 	connect(mPlayer,&MusicPlayer::positionChanged,ui->posSlider,&QSlider::setValue);
 
-	MusicUtil::loadPlayerSetting(mPlayer,"../data/player.ini");
+	MusicUtil::loadMainWindowSetting(this,"../data/setting.ini");
+	MusicUtil::loadPlaylist(mPlayer,"../data/playlist");
+	MusicUtil::loadPlayerSetting(mPlayer,"../data/setting.ini");
 	mVolumeSlider->setValue(mPlayer->audio()->volume()*100);
 }
 
@@ -66,7 +68,7 @@ void MainWindow::on_clicked_Open()
 	QStringList fileNames=QFileDialog::getOpenFileNames(this,tr("Add Music"));
 	for(QString fileName:fileNames){
 		MusicObject obj;
-		obj.d->path=fileName;
+		obj.path=fileName;
 		mPlayer->addMusic(obj);
 		mPlayer->asyncLoadInfo(mPlayer->playlist().size()-1);
 		mPlayer->asyncLoadPicture(mPlayer->playlist().size()-1);
@@ -74,16 +76,16 @@ void MainWindow::on_clicked_Open()
 	mPlayer->playAt(mPlayer->playlist().size()-1);
 }
 
-void MainWindow::onCurrentIndexChanged(int index)
+void MainWindow::onCurrentIndexChanged(int oldIndex, int newIndex)
 {
-	if(index==-1){
+	if(newIndex==-1){
 		ui->titleLabel->setText(QString());
 		ui->artistLabel->setText(QString());
 		ui->titleLabel->setFixedHeight(0);
 		ui->artistLabel->setFixedHeight(0);
 	}else{
-		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer->currentMusic().d->infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
-		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer->currentMusic().d->infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
+		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
+		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
 		ui->titleLabel->setText(title);
 		ui->artistLabel->setText(artist);
 		ui->titleLabel->setFixedHeight(ui->titleLabel->sizeHint().height());
@@ -94,11 +96,11 @@ void MainWindow::onCurrentIndexChanged(int index)
 	ui->posSlider->setValue(0);
 }
 
-void MainWindow::onLoadedInfo(int index)
+void MainWindow::onInfoLoaded(int index)
 {
 	if(index==mPlayer->currentIndex()){
-		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer->currentMusic().d->infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
-		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer->currentMusic().d->infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
+		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
+		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
 		ui->titleLabel->setFixedHeight(ui->titleLabel->sizeHint().height());
 		ui->artistLabel->setFixedHeight(ui->artistLabel->sizeHint().height());
 		ui->titleLabel->setText(title);
@@ -161,7 +163,30 @@ void MainWindow::on_clicked_VolumeButton()
 void MainWindow::onPosSliderPressed()
 {
 	mPlayer->audio()->close();
-	mPlayer->audio()->clear();
+}
+
+void MainWindow::onPosSliderMoved(int pos)
+{
+	if(!mPlayer->isPlaying()){
+		mReadyPos=pos;
+		emit mPlayer->positionChanged(mReadyPos);
+	}else{
+		mPlayer->setPosition(pos);
+	}
+}
+
+void MainWindow::onPosSliderReleased()
+{
+	if(!mPlayer->isPlaying()){
+		connect(mPlayer,&MusicPlayer::positionChanged,ui->posSlider,&QSlider::setValue);
+		mPlayer->play();
+		mPlayer->setPosition(mReadyPos);
+	}else if(mPlayer->currentIndex()!=-1){
+		mPlayer->audio()->clear();
+		mPlayer->audio()->open();
+	}
+
+
 }
 
 void MainWindow::onStateChanged()
@@ -170,12 +195,6 @@ void MainWindow::onStateChanged()
 	style()->unpolish(ui->playButton);
 	style()->polish(ui->playButton);
 	ui->playButton->update();
-}
-
-void MainWindow::onPosSliderReleased()
-{
-	if(mPlayer->currentIndex()!=-1)
-		mPlayer->audio()->open();
 }
 
 MusicPlayer* MainWindow::player() const
@@ -211,11 +230,15 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event)
 		ui->musicsLabel->update();
 		ui->bioLabel->update();
 		ui->lyricsLabel->update();
+		return true;
 	}
+	return QMainWindow::eventFilter(watched,event);
 }
 
 MainWindow::~MainWindow()
 {
-	MusicUtil::savePlayerSetting(mPlayer,"../data/player.ini");
+	MusicUtil::saveMainWindowSetting(this,"../data/setting.ini");
+	MusicUtil::savePlaylist(mPlayer,"../data/playlist");
+	MusicUtil::savePlayerSetting(mPlayer,"../data/setting.ini");
 	delete ui;
 }

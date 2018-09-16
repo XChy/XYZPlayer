@@ -24,11 +24,11 @@ MusicPlayer* BioWidget::player() const
 void BioWidget::setPlayer(MusicPlayer* player)
 {
 	if(player){
-		connect(player,&MusicPlayer::loadedPicture,this,&BioWidget::onLoadedPicture);
+		connect(player,&MusicPlayer::pictureLoaded,this,&BioWidget::onLoadedPicture);
 		connect(player,&MusicPlayer::currentIndexChanged,this,&BioWidget::onCurrentIndexChanged);
 	}
 	if(mPlayer){
-		disconnect(mPlayer,&MusicPlayer::loadedPicture,this,&BioWidget::onLoadedPicture);
+		disconnect(mPlayer,&MusicPlayer::pictureLoaded,this,&BioWidget::onLoadedPicture);
 		disconnect(mPlayer,&MusicPlayer::currentIndexChanged,this,&BioWidget::onCurrentIndexChanged);
 	}
 	mPlayer = player;
@@ -36,8 +36,13 @@ void BioWidget::setPlayer(MusicPlayer* player)
 
 void BioWidget::updatePicture()
 {
-	if(mPlayer->currentIndex()!=-1)
-		mPictureLabel->setPixmap(QPixmap::fromImage(mPlayer->currentMusic().d->picture.scaled(mPictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
+	if(mPlayer->currentIndex()!=-1){
+		mPictureLabel->setPixmap(QPixmap::fromImage(mPlayer->currentMusic().picture.scaled(mPictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
+		if(mPictureLabel->pixmap()->isNull())mPictureLabel->setText(tr("No image"));
+	}else{
+		mPictureLabel->setPixmap(QPixmap());
+		mPictureLabel->setText(tr("No image"));
+	}
 }
 
 void BioWidget::onLoadedPicture(int index)
@@ -47,11 +52,16 @@ void BioWidget::onLoadedPicture(int index)
 	}
 }
 
-void BioWidget::onCurrentIndexChanged(int index)
+void BioWidget::onCurrentIndexChanged(int oldIndex,int newIndex)
 {
-	if(index==-1){
-		mPictureLabel->setPixmap(QPixmap());
+	if(oldIndex==newIndex)return;
+	if(oldIndex!=-1){
+		mPlayer->unLoadPicture(oldIndex);
+	}
+	if(newIndex!=-1){
+		mPlayer->asyncLoadPicture(newIndex);
 	}else{
-		updatePicture();
+		mPictureLabel->setPixmap(QPixmap());
+		mPictureLabel->setText(tr("No image"));
 	}
 }

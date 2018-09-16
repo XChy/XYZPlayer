@@ -43,7 +43,7 @@ class LyricItemDelegate : public QItemDelegate
 	Q_OBJECT
 public:
 	LyricItemDelegate(QObject* parent=nullptr);
-	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;//TODO complete it
+	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 #endif // ITEMDELEGATES_H

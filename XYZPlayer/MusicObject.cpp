@@ -1,6 +1,8 @@
 #include "MusicObject.h"
 
 MusicObject::MusicObject()
-	:d(new MusicSharedData)
+	:duration(0)
 {
 }
+
+

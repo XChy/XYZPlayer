@@ -8,8 +8,7 @@ int main(int argc, char *argv[])
 	QTranslator translator;
 	translator.load("zh_CN");
 	a.installTranslator(&translator);
-	MainWindow w;
-	a.setStyleSheet("QMenu{"
+	a.setStyleSheet(QStringLiteral("QMenu{"
 					"background-color:white;"
 					"border: 1px solid #b2b2b2;"
 					"}"
@@ -158,20 +157,16 @@ int main(int argc, char *argv[])
 					"border-radius: 0px;"
 					"padding: 2px 4px;"
 					"}"
+					"LyricsView{"
+					"selection-background-color:#cccccc;"
+					"border: none;"
+					"}"
 					"QMainWindow{"
 					"border: 0.5px solid #b2b2b2;"
 					"}"
-					);
-	while(--argc){
-		MusicObject obj;
-		obj.d->path=QString::fromLocal8Bit(argv[argc]);
-		w.player()->addMusic(obj);
-		w.player()->asyncLoadInfo(w.player()->playlist().size()-1);
-		w.player()->asyncLoadPicture(w.player()->playlist().size()-1);
-	}
-	if(!w.player()->playlist().isEmpty()){
-		w.player()->playAt(w.player()->playlist().size()-1);
-	}
+					));
+	MainWindow w;
 	w.show();
+	w.player()->asyncLoadAllInfo();
 	return a.exec();
 }

@@ -30,6 +30,8 @@ public:
 
 	virtual bool setData(const QModelIndex& index, const QVariant& v, int role = Qt::EditRole);
 public slots:
+	void onCurrentIndexChanged(int oldIndex,int newIndex);
+	void onInfoLoaded(int index);
 	void refresh();
 private:
 	MusicPlayer* mPlayer;

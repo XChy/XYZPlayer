@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <XYZPlayer/MusicPlayer.h>
-#include <QListView>
+#include <XYZPlayer/LyricsView.h>
 #include <XYZPlayer/LyricsModel.h>
 #include <XYZPlayer/ItemDelegates.h>
 
@@ -21,7 +21,7 @@ public:
 private:
 	MusicPlayer* mPlayer;
 	LyricsModel* mModel;
-	QListView* mView;
+	LyricsView* mView;
 };
 
 #endif // LYRICSWIDGET_H

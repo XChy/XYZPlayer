@@ -3,7 +3,7 @@
 LyricsWidget::LyricsWidget(QWidget *parent)
 	: QWidget(parent),
 	  mModel(new LyricsModel(this)),
-	  mView(new QListView(this)),
+	  mView(new LyricsView(this)),
 	  mPlayer(nullptr)
 {
 	mView->move(0,0);

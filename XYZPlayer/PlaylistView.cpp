@@ -16,17 +16,17 @@ PlaylistView::PlaylistView(QWidget* parent)
 	});
 	mPopupMenu->addAction(tr("Copy title"),[&](){
 		QApplication::clipboard()->setText(
-					model()->player()->playlist()[selectionModel()->currentIndex().row()].d->infoTags["title"]
+					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["title"]
 				);
 	});
 	mPopupMenu->addAction(tr("Copy artist"),[&](){
 		QApplication::clipboard()->setText(
-					model()->player()->playlist()[selectionModel()->currentIndex().row()].d->infoTags["artist"]
+					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["artist"]
 				);
 	});
 	mPopupMenu->addAction(tr("Copy album"),[&](){
 		QApplication::clipboard()->setText(
-					model()->player()->playlist()[selectionModel()->currentIndex().row()].d->infoTags["album"]
+					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["album"]
 				);
 	});
 	mPopupMenu->addAction(tr("Remove"),[&](){

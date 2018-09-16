@@ -2,6 +2,14 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="zh_CN" sourcelanguage="en">
 <context>
+    <name>LyricsView</name>
+    <message>
+        <location filename="XYZPlayer/LyricsView.cpp" line="7"/>
+        <source>Copy</source>
+        <translation>复制</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="XYZPlayer/MainWindow.ui" line="14"/>
@@ -54,27 +62,27 @@
         <translation>打开</translation>
     </message>
     <message>
-        <location filename="XYZPlayer/MainWindow.cpp" line="64"/>
+        <location filename="XYZPlayer/MainWindow.cpp" line="66"/>
         <source>Add Music</source>
         <translation>添加音乐</translation>
     </message>
     <message>
-        <location filename="XYZPlayer/MainWindow.cpp" line="131"/>
+        <location filename="XYZPlayer/MainWindow.cpp" line="133"/>
         <source>List loop</source>
         <translation>列表循环</translation>
     </message>
     <message>
-        <location filename="XYZPlayer/MainWindow.cpp" line="135"/>
+        <location filename="XYZPlayer/MainWindow.cpp" line="137"/>
         <source>Single loop</source>
         <translation>单曲循环</translation>
     </message>
     <message>
-        <location filename="XYZPlayer/MainWindow.cpp" line="139"/>
+        <location filename="XYZPlayer/MainWindow.cpp" line="141"/>
         <source>Sequentially</source>
         <translation>顺序播放</translation>
     </message>
     <message>
-        <location filename="XYZPlayer/MainWindow.cpp" line="143"/>
+        <location filename="XYZPlayer/MainWindow.cpp" line="145"/>
         <source>Random</source>
         <translation>随机播放</translation>
     </message>
@@ -131,7 +139,7 @@
 <context>
     <name>PlaylistWidget</name>
     <message>
-        <location filename="XYZPlayer/PlaylistWidget.cpp" line="8"/>
+        <location filename="XYZPlayer/PlaylistWidget.cpp" line="7"/>
         <source>Playlist</source>
         <translation>播放列表</translation>
     </message>

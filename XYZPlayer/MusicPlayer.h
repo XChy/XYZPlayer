@@ -4,6 +4,9 @@
 #include <QtAV/QtAV>
 #include <QThreadPool>
 #include <QList>
+#include <QtConcurrentMap>
+#include <QtConcurrentRun>
+#include <QFutureWatcher>
 #include <QRunnable>
 #include <QFileInfo>
 #include <XYZPlayer/MusicObject.h>
@@ -23,6 +26,7 @@ public:
 	MusicPlayer(QObject* parent=nullptr);
 
 	QList<MusicObject> playlist() const;
+	QList<MusicObject>& playlist();
 	void setPlaylist(const QList<MusicObject>& playlist);
 
 	PlaybackMode playbackMode() const;
@@ -45,25 +49,38 @@ public:
 	void playPrev();
 
 	void playback();
-	bool canPlayback();
+	bool canPlayback() const;
+
+	const QFutureWatcher<int>& infoLoaderWatcher() const;
+
 public slots:
 	void loadInfo(int index);
+
 	void loadPicture(int index);
 	void loadLyrics(int index);
 
+	void unLoadInfo(int index);
+	void unLoadPicture(int index);
+	void unLoadLyrics(int index);
+
 	void asyncLoadInfo(int index);
+	void asyncLoadInfo(int begin,int end);
+	void asyncLoadAllInfo();
+
 	void asyncLoadPicture(int index);
 	void asyncLoadLyrics(int index);
 signals:
-	void currentIndexChanged(int index);
+	void currentIndexChanged(int oldIndex,int newIndex);
 	void playlistElementsChanged();
-	void loadedInfo(int index);
-	void loadedPicture(int index);
-	void loadedLyrics(int index);
+	void infoLoaded(int index);
+	void pictureLoaded(int index);
+	void lyricsLoaded(int index);
 private:
 	void onMediaStatusChanged(QtAV::MediaStatus state);
 private:
 	QList<MusicObject> mPlaylist;
+	QFutureWatcher<int> mInfoLoaderWatcher;
+	int mInfoBeginLoadIndex;
 	int mCurrentIndex;
 	PlaybackMode mPlaybackMode;
 };

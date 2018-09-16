@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -38,7 +38,8 @@ SOURCES += \
     XYZPlayer/BioWidget.cpp \
     XYZPlayer/MusicUtil.cpp \
     XYZPlayer/LyricsWidget.cpp \
-    XYZPlayer/LyricsModel.cpp
+    XYZPlayer/LyricsModel.cpp \
+    XYZPlayer/LyricsView.cpp
 
 HEADERS += \
 	XYZPlayer/MainWindow.h \
@@ -51,7 +52,8 @@ HEADERS += \
     XYZPlayer/BioWidget.h \
     XYZPlayer/MusicUtil.h \
     XYZPlayer/LyricsWidget.h \
-    XYZPlayer/LyricsModel.h
+    XYZPlayer/LyricsModel.h \
+    XYZPlayer/LyricsView.h
 
 FORMS += \
 	XYZPlayer/MainWindow.ui
@@ -63,6 +65,4 @@ RC_ICONS=res/images/logo.ico
 
 TRANSLATIONS += zh_CN.ts
 
-DISTFILES += \
-    screenshots/bio.png \
-    screenshots/lyrics.png
+DISTFILES +=
