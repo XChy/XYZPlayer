@@ -80,7 +80,9 @@ private:
 private:
 	QList<MusicObject> mPlaylist;
 	QFutureWatcher<int> mInfoLoaderWatcher;
+	QFutureWatcher<int> mPictureLoaderWatcher;
 	int mInfoBeginLoadIndex;
+	int mPictureBeginLoadIndex;
 	int mCurrentIndex;
 	PlaybackMode mPlaybackMode;
 };

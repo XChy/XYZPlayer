@@ -9,7 +9,7 @@ class LyricsObject{
 public:
 	QString path;
 	QList<QPair<int64_t,QString>> lyricList;
-	//int64_t:position unit:μs
+	//int64_t:position unit:ms
 };
 
 class MusicObject

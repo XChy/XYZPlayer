@@ -2,9 +2,9 @@
 
 LyricsModel::LyricsModel(QObject* parent)
 	:QAbstractListModel(parent),
-	  mPlayer(nullptr)
+	  mPlayer(nullptr),
+	  lyricIndex(0)
 {
-
 }
 
 int LyricsModel::rowCount(const QModelIndex& parent) const
@@ -20,7 +20,7 @@ QVariant LyricsModel::data(const QModelIndex& index, int role) const
 	if(role==Qt::DisplayRole){
 		return mPlayer->currentMusic().lyrics.lyricList[index.row()].second;
 	}else if(role==Qt::UserRole){
-		return index.row()==mLyricIndex;
+		return index.row()==lyricIndex;
 	}
 	return QVariant();
 }
@@ -52,25 +52,29 @@ bool LyricsModel::setData(const QModelIndex& index, const QVariant& v, int role)
 
 void LyricsModel::onPositionChanged(int64_t pos)
 {
-	if(!mPlayer->currentMusic().lyrics.lyricList.isEmpty()){
-		if(mLyricIndex==mPlayer->currentMusic().lyrics.lyricList.size()-1){
-			QPair<int64_t,QString> currentLyric=mPlayer->currentMusic().lyrics.lyricList[mLyricIndex];
-			if(pos*1000<currentLyric.first&&mLyricIndex!=0){
-				--mLyricIndex;
-			}
+	auto& lyricsList=mPlayer->currentMusic().lyrics.lyricList;
+	if(lyricsList.isEmpty()){
+		return;
+	}else if(lyricsList.first().first>pos){
+		lyricIndex=0;
+	}else if(lyricsList.last().first<pos){
+		lyricIndex=lyricsList.size()-1;
+	}else{
+		if(lyricIndex!=lyricsList.size()-1&&pos>=lyricsList[lyricIndex+1].first){
+			++lyricIndex;
+		}else if(pos>=lyricsList[lyricIndex].first){
+			return;
+		}else if(pos>=lyricsList[lyricIndex-1].first){
+			--lyricIndex;
 		}else{
-			QPair<int64_t,QString> nextLyric=mPlayer->currentMusic().lyrics.lyricList[mLyricIndex+1];
-			if(pos*1000>=nextLyric.first){
-				++mLyricIndex;
-			}else{
-				QPair<int64_t,QString> currentLyric=mPlayer->currentMusic().lyrics.lyricList[mLyricIndex];
-				if(pos*1000<currentLyric.first&&mLyricIndex!=0){
-					--mLyricIndex;
-				}
-			}
+			auto it=std::upper_bound(lyricsList.begin(),lyricsList.end(),QPair<int64_t,QString>(pos,QStringLiteral(""))
+									 ,[](const QPair<int64_t,QString>& v1,const QPair<int64_t,QString>& v2){
+				return v1.first<v2.first;
+			});
+			lyricIndex=it-lyricsList.begin()-1;
 		}
 	}
-	emit dataChanged(index(mLyricIndex),index(mLyricIndex));
+	emit dataChanged(index(lyricIndex),index(lyricIndex));
 }
 
 void LyricsModel::onCurrentIndexChanged(int oldIndex, int newIndex)
@@ -88,7 +92,7 @@ void LyricsModel::onCurrentIndexChanged(int oldIndex, int newIndex)
 
 void LyricsModel::refresh()
 {
-	mLyricIndex=0;
+	lyricIndex=0;
 	beginResetModel();
 	endResetModel();
 }

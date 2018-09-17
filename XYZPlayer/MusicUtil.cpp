@@ -8,9 +8,9 @@ namespace MusicUtil{
 LyricsError loadLyrics(MusicObject& music)
 {
 	music.lyrics.lyricList.clear();//clear old lyrics
-
 	QFile file(music.lyrics.path);
 	if(file.open(QFile::ReadOnly)){
+		QMap<int64_t,QString> lyricsMap;
 		while(!file.atEnd()){
 			QString line=file.readLine();
 			if(line[0]=='['){
@@ -21,10 +21,14 @@ LyricsError loadLyrics(MusicObject& music)
 					}
 					int colon=line.indexOf(':');
 					int64_t pos=0;
-					pos+=line.mid(1,colon-1).toLongLong()*60*1000*1000;
-					pos+=line.mid(colon+1,closeBracket-colon-1).toDouble()*1000*1000;
+					pos+=line.mid(1,colon-1).toLongLong()*60*1000;
+					pos+=line.mid(colon+1,closeBracket-colon-1).toDouble()*1000;
 					QString lyricsStr=line.mid(closeBracket+1);
-					music.lyrics.lyricList.append(QPair<int64_t,QString>(pos,lyricsStr));
+					if(lyricsMap.contains(pos)){
+						lyricsMap[pos].append(lyricsStr);
+					}else{
+						lyricsMap[pos]=lyricsStr;
+					}
 				}else{
 					return ParseError;
 				}
@@ -33,6 +37,9 @@ LyricsError loadLyrics(MusicObject& music)
 			}else{
 				return ParseError;
 			}
+		}
+		for(QMap<int64_t,QString>::iterator it=lyricsMap.begin();it!=lyricsMap.end();++it){
+			music.lyrics.lyricList.append(QPair<int64_t,QString>(it.key(),it.value()));
 		}
 		return NoError;
 	}else{
@@ -49,9 +56,9 @@ int loadInfo(MusicObject& music)
 	av_register_all();
 
 	if (ret = avformat_open_input(&fmt_ctx, music.path.toLocal8Bit(), NULL, NULL)){
-//		char buffer[128];
-//		av_strerror(ret,buffer,sizeof(buffer));
-//		printf("Fail to open file at loadInfo AVError:%s\n",buffer);
+		//		char buffer[128];
+		//		av_strerror(ret,buffer,sizeof(buffer));
+		//		printf("Fail to open file at loadInfo AVError:%s\n",buffer);
 		return ret;
 	}
 
@@ -73,7 +80,7 @@ int loadInfo(MusicObject& music)
 	return 0;
 }
 
-void loadPicture(MusicObject& music)
+int loadPicture(MusicObject& music)
 {
 	AVFormatContext *fmt_ctx = NULL;
 	int ret;
@@ -81,14 +88,14 @@ void loadPicture(MusicObject& music)
 	av_register_all();
 
 	if ((ret = avformat_open_input(&fmt_ctx,music.path.toLocal8Bit(), NULL, NULL))){
-		char buffer[128];
-		av_strerror(ret,buffer,sizeof(buffer));
-		printf("Fail to open file at loadPicture AVError:%s\n",buffer);
-		return;
+		//		char buffer[128];
+		//		av_strerror(ret,buffer,sizeof(buffer));
+		//		printf("Fail to open file at loadPicture AVError:%s\n",buffer);
+		return ret;
 	}
 	if (fmt_ctx->iformat->read_header(fmt_ctx) < 0) {
 		printf("No header format");
-		return;
+		return -1;
 	}
 
 	for (int i = 0; i < fmt_ctx->nb_streams; i++){
@@ -101,54 +108,57 @@ void loadPicture(MusicObject& music)
 
 	avformat_close_input(&fmt_ctx);
 	avformat_free_context(fmt_ctx);
+	return 0;
 }
 
-void savePlayerSetting(MusicPlayer* player, QString path)
+void savePlayerSetting(MusicPlayer* player)
 {
-	QSettings setting(path,QSettings::IniFormat);
+	QSettings setting;
 	setting.beginGroup("Player");
 	setting.setValue("volume",qreal(player->audio()->volume()));
 	setting.setValue("current_index",player->currentIndex());
 	setting.setValue("playback_mode",qint32(player->playbackMode()));
 	setting.endGroup();
+	setting.sync();
 }
 
-void loadPlayerSetting(MusicPlayer* player, QString path)
+void loadPlayerSetting(MusicPlayer* player)
 {
-	QSettings setting(path,QSettings::IniFormat);
+	QSettings setting;
 	player->audio()->setVolume(setting.value("Player/volume",qreal(1)).toReal());
 	player->setCurrentIndex(setting.value("Player/current_index",-1).toInt());
 	player->setPlaybackMode(PlaybackMode(setting.value("Player/playback_mode",qint32(Loop)).toInt()));
 }
 
-void saveMainWindowSetting(MainWindow* window, QString path)
+void saveMainWindowSetting(MainWindow* window)
 {
-	QSettings setting(path,QSettings::IniFormat);
+	QSettings setting;
 	setting.beginGroup("MainWindow");
 	setting.setValue("size",window->size());
 	setting.setValue("pos",window->pos());
 	setting.endGroup();
+	setting.sync();
 }
 
-void loadMainWindowSetting(MainWindow* window, QString path)
+void loadMainWindowSetting(MainWindow* window)
 {
-	QSettings setting(path,QSettings::IniFormat);
+	QSettings setting;
 	window->resize(setting.value("MainWindow/size",window->size()).toSize());
 	window->move(setting.value("MainWindow/pos",window->pos()).toPoint());
 }
 
-void savePlaylist(MusicPlayer* player, QString path)
+void savePlaylist(MusicPlayer* player)
 {
-	QFile file(path);
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).append("/playlist"));
 	if(file.open(QFile::WriteOnly)){
 		QDataStream out(&file);
 		out<<player->playlist();
 	}
 }
 
-void loadPlaylist(MusicPlayer* player, QString path)
+void loadPlaylist(MusicPlayer* player)
 {
-	QFile file(path);
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).append("/playlist"));
 	if(file.open(QFile::ReadWrite)){
 		QDataStream stream(&file);
 		if(!file.exists()){

@@ -16,10 +16,13 @@ public:
 	virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
 	virtual Qt::DropActions supportedDropActions() const;
+	virtual Qt::DropActions supportedDragActions() const;
 
 	virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
 	virtual QStringList mimeTypes() const;
+
+	virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
 
 	virtual bool canDropMimeData(const QMimeData *data, Qt::DropAction action,
 								 int row, int column, const QModelIndex &parent) const;

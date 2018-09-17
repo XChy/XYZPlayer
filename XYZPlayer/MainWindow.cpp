@@ -34,7 +34,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	mPlayer->setParent(ui->playlistWidget);
 	ui->playlistWidget->setPlayer(mPlayer);
 
-	connect(ui->OpenAction,&QAction::triggered,this,&MainWindow::on_clicked_Open);
 	connect(mPlayer,&MusicPlayer::currentIndexChanged,this,&MainWindow::onCurrentIndexChanged);
 	connect(mPlayer,&MusicPlayer::infoLoaded,this,&MainWindow::onInfoLoaded,Qt::QueuedConnection);
 	connect(ui->playButton,&QPushButton::clicked,this,&MainWindow::on_clicked_playButton);
@@ -57,23 +56,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(mPlayer,&MusicPlayer::durationChanged,ui->posSlider,&QSlider::setMaximum);
 	connect(mPlayer,&MusicPlayer::positionChanged,ui->posSlider,&QSlider::setValue);
 
-	MusicUtil::loadMainWindowSetting(this,"../data/setting.ini");
-	MusicUtil::loadPlaylist(mPlayer,"../data/playlist");
-	MusicUtil::loadPlayerSetting(mPlayer,"../data/setting.ini");
+	QSettings::setDefaultFormat(QSettings::IniFormat);
+	MusicUtil::loadMainWindowSetting(this);
+	MusicUtil::loadPlaylist(mPlayer);
+	MusicUtil::loadPlayerSetting(mPlayer);
 	mVolumeSlider->setValue(mPlayer->audio()->volume()*100);
-}
-
-void MainWindow::on_clicked_Open()
-{
-	QStringList fileNames=QFileDialog::getOpenFileNames(this,tr("Add Music"));
-	for(QString fileName:fileNames){
-		MusicObject obj;
-		obj.path=fileName;
-		mPlayer->addMusic(obj);
-		mPlayer->asyncLoadInfo(mPlayer->playlist().size()-1);
-		mPlayer->asyncLoadPicture(mPlayer->playlist().size()-1);
-	}
-	mPlayer->playAt(mPlayer->playlist().size()-1);
 }
 
 void MainWindow::onCurrentIndexChanged(int oldIndex, int newIndex)
@@ -163,30 +150,19 @@ void MainWindow::on_clicked_VolumeButton()
 void MainWindow::onPosSliderPressed()
 {
 	mPlayer->audio()->close();
+	mPlayer->audio()->clear();
 }
 
 void MainWindow::onPosSliderMoved(int pos)
 {
-	if(!mPlayer->isPlaying()){
-		mReadyPos=pos;
-		emit mPlayer->positionChanged(mReadyPos);
-	}else{
-		mPlayer->setPosition(pos);
-	}
+	mPlayer->setPosition(pos);
 }
 
 void MainWindow::onPosSliderReleased()
 {
-	if(!mPlayer->isPlaying()){
-		connect(mPlayer,&MusicPlayer::positionChanged,ui->posSlider,&QSlider::setValue);
-		mPlayer->play();
-		mPlayer->setPosition(mReadyPos);
-	}else if(mPlayer->currentIndex()!=-1){
-		mPlayer->audio()->clear();
+	if(mPlayer->currentIndex()!=-1){
 		mPlayer->audio()->open();
 	}
-
-
 }
 
 void MainWindow::onStateChanged()
@@ -237,8 +213,8 @@ bool MainWindow::eventFilter(QObject* watched, QEvent* event)
 
 MainWindow::~MainWindow()
 {
-	MusicUtil::saveMainWindowSetting(this,"../data/setting.ini");
-	MusicUtil::savePlaylist(mPlayer,"../data/playlist");
-	MusicUtil::savePlayerSetting(mPlayer,"../data/setting.ini");
+	MusicUtil::saveMainWindowSetting(this);
+	MusicUtil::savePlaylist(mPlayer);
+	MusicUtil::savePlayerSetting(mPlayer);
 	delete ui;
 }

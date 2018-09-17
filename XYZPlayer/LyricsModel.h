@@ -23,7 +23,7 @@ public slots:
 	void refresh();
 private:
 	MusicPlayer* mPlayer;
-	int mLyricIndex;
+	int lyricIndex;
 };
 
 #endif // LYRICSMODEL_H

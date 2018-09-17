@@ -40,13 +40,18 @@ QVariant PlaylistModel::data(const QModelIndex& index, int role) const
 
 Qt::DropActions PlaylistModel::supportedDropActions() const
 {
-	return Qt::CopyAction | Qt::MoveAction | Qt::TargetMoveAction;
+	return Qt::CopyAction | Qt::MoveAction;
+}
+
+Qt::DropActions PlaylistModel::supportedDragActions() const
+{
+	return Qt::MoveAction;
 }
 
 Qt::ItemFlags PlaylistModel::flags(const QModelIndex& index) const
 {
 	Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
-	return Qt::ItemIsDropEnabled | defaultFlags;
+	return Qt::ItemIsDropEnabled| Qt::ItemIsDragEnabled | defaultFlags;
 }
 
 QStringList PlaylistModel::mimeTypes() const
@@ -54,9 +59,15 @@ QStringList PlaylistModel::mimeTypes() const
 	return {"text/url-list"};
 }
 
+QMimeData* PlaylistModel::mimeData(const QModelIndexList& indexes) const
+{
+	QMimeData* data=new QMimeData;
+	return data;
+}
+
 bool PlaylistModel::canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const
 {
-	return data->hasUrls();
+	return data->hasUrls()||action==Qt::MoveAction;
 }
 
 bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent){

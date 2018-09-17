@@ -7,6 +7,7 @@ LyricsWidget::LyricsWidget(QWidget *parent)
 	  mPlayer(nullptr)
 {
 	mView->move(0,0);
+	mView->setResizeMode(QListView::Adjust);
 	mView->setItemDelegate(new LyricItemDelegate(this));
 }
 

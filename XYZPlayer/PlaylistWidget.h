@@ -2,7 +2,8 @@
 #define PLAYLISTWIDGET_H
 
 #include <QLabel>
-#include <QGraphicsEffect>
+#include <QPushButton>
+#include <QFileDialog>
 #include <XYZPlayer/MusicPlayer.h>
 #include <XYZPlayer/PlaylistModel.h>
 #include <XYZPlayer/PlaylistView.h>
@@ -23,10 +24,13 @@ public:
 
 	void setPlayer(MusicPlayer* player);
 
+public slots:
+	void on_clicked_addButton();
 private:
 	PlaylistView* mView;
 	PlaylistModel* mModel;
 	QLabel* mTitle;
+	QPushButton* mAddButton;
 
 	int headerY();
 };

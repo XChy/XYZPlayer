@@ -5,12 +5,20 @@ MusicPlayer::MusicPlayer(QObject* parent)
 	:QtAV::AVPlayer(parent),
 	  mCurrentIndex(-1),
 	  mPlaybackMode(Loop),
-	  mInfoBeginLoadIndex(0)
+	  mInfoBeginLoadIndex(0),
+	  mPictureBeginLoadIndex(0)
 {
+	setAutoLoad();
 	mInfoLoaderWatcher.setPendingResultsLimit(5);
 	connect(this,&MusicPlayer::mediaStatusChanged,this,&MusicPlayer::onMediaStatusChanged);
+
 	connect(&mInfoLoaderWatcher,&QFutureWatcher<int>::resultReadyAt,[this](int index){
 		emit infoLoaded(mInfoBeginLoadIndex+index);
+	});
+
+	mPictureLoaderWatcher.setPendingResultsLimit(3);
+	connect(&mPictureLoaderWatcher,&QFutureWatcher<int>::resultReadyAt,[this](int index){
+		emit pictureLoaded(mPictureBeginLoadIndex+index);
 	});
 }
 
@@ -180,37 +188,9 @@ void MusicPlayer::loadLyrics(int index)
 	emit lyricsLoaded(index);
 }
 
-void MusicPlayer::unLoadInfo(int index)
-{
-	mPlaylist[index].infoTags.clear();
-	mPlaylist[index].duration=0;
-}
-
-void MusicPlayer::unLoadPicture(int index)
-{
-	mPlaylist[index].picture=QImage();
-}
-
-void MusicPlayer::unLoadLyrics(int index)
-{
-	mPlaylist[index].lyrics.lyricList.clear();
-}
-
 void MusicPlayer::asyncLoadInfo(int index)
 {
-	class Runnable:public QRunnable{
-	public:
-		Runnable(MusicPlayer* player,int index)
-			:mPlayer(player),mIndex(index){}
-		void run(){
-			mPlayer->loadInfo(mIndex);
-		}
-		MusicPlayer* mPlayer;
-		int mIndex;
-	};
-	Runnable* runnable=new Runnable(this,index);
-	runnable->setAutoDelete(true);
-	QThreadPool::globalInstance()->start(runnable);
+	QtConcurrent::run(this,&MusicPlayer::loadInfo,index);
 }
 
 void MusicPlayer::asyncLoadInfo(int begin, int end)
@@ -233,6 +213,24 @@ void MusicPlayer::asyncLoadPicture(int index)
 void MusicPlayer::asyncLoadLyrics(int index)
 {
 	QtConcurrent::run(this,&MusicPlayer::loadLyrics,index);
+}
+
+void MusicPlayer::unLoadInfo(int index)
+{
+	mPlaylist[index].infoTags.clear();
+	mPlaylist[index].duration=0;
+}
+
+void MusicPlayer::unLoadPicture(int index)
+{
+	if(mPictureLoaderWatcher.isRunning())
+		mPictureLoaderWatcher.cancel();
+	mPlaylist[index].picture=QImage();
+}
+
+void MusicPlayer::unLoadLyrics(int index)
+{
+	mPlaylist[index].lyrics.lyricList.clear();
 }
 
 void MusicPlayer::onMediaStatusChanged(QtAV::MediaStatus state)

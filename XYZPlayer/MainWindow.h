@@ -27,7 +27,6 @@ public:
 
 	bool eventFilter(QObject *watched, QEvent *event);
 private slots:
-	void on_clicked_Open();
 	void onCurrentIndexChanged(int oldIndex,int newIndex);
 	void onInfoLoaded(int index);
 	void on_clicked_playButton();

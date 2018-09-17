@@ -11,5 +11,6 @@
         <file>images/easy/random.png</file>
         <file>images/easy/sequential.png</file>
         <file>images/easy/volume.png</file>
+        <file>images/easy/add.png</file>
     </qresource>
 </RCC>
