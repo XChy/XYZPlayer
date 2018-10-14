@@ -18,7 +18,7 @@ PlaylistView::PlaylistView(QWidget* parent)
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["title"]
 				);
-	});
+    });
 	mPopupMenu->addAction(tr("Copy artist"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["artist"]
@@ -62,7 +62,7 @@ void PlaylistView::contextMenuEvent(QContextMenuEvent* e)
 void PlaylistView::mouseDoubleClickEvent(QMouseEvent* e)
 {
 	QModelIndex index=indexAt(e->pos());
-	if(index.isValid()){
+	if(index.isValid()&&e->button()==Qt::LeftButton){
 		model()->player()->playAt(index.row());
 	}
 }

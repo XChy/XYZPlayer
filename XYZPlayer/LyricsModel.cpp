@@ -74,6 +74,7 @@ void LyricsModel::onPositionChanged(int64_t pos)
 			lyricIndex=it-lyricsList.begin()-1;
 		}
 	}
+	emit lyricIndexChanged(index(lyricIndex));
 	emit dataChanged(index(lyricIndex),index(lyricIndex));
 }
 
@@ -93,6 +94,7 @@ void LyricsModel::onCurrentIndexChanged(int oldIndex, int newIndex)
 void LyricsModel::refresh()
 {
 	lyricIndex=0;
+	emit lyricIndexChanged(QModelIndex());
 	beginResetModel();
 	endResetModel();
 }

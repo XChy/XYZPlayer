@@ -44,6 +44,8 @@ public:
 
 	void removeMusic(int index);
 
+    void clearAllMusic();
+
 	void playAt(int index);
 	void playNext();
 	void playPrev();
@@ -75,6 +77,8 @@ signals:
 	void infoLoaded(int index);
 	void pictureLoaded(int index);
 	void lyricsLoaded(int index);
+
+	void playbackModeChanged(PlaybackMode mode);
 private:
 	void onMediaStatusChanged(QtAV::MediaStatus state);
 private:

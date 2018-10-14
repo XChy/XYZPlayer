@@ -6,7 +6,8 @@ PlaylistWidget::PlaylistWidget(QWidget *parent) :
 	mView(new PlaylistView(this)),
 	mTitle(new QLabel(tr("Playlist"),this)),
 	mModel(new PlaylistModel(this)),
-	mAddButton(new QPushButton(this))
+    mAddButton(new QPushButton(this)),
+    mClearButton(new QPushButton(this))
 {
 	mTitle->setObjectName("PlaylistTitle");
 	mTitle->setAlignment(Qt::AlignHCenter|Qt::AlignVCenter);
@@ -14,7 +15,11 @@ PlaylistWidget::PlaylistWidget(QWidget *parent) :
 	mAddButton->setObjectName("AddButton");
 	mAddButton->setCursor(Qt::PointingHandCursor);
 	mAddButton->setFixedSize(30,30);
+    mClearButton->setObjectName("ClearButton");
+    mClearButton->setCursor(Qt::PointingHandCursor);
+    mClearButton->setFixedSize(30,30);
 	connect(mAddButton,&QPushButton::clicked,this,&PlaylistWidget::on_clicked_addButton);
+    connect(mClearButton,&QPushButton::clicked,this,&PlaylistWidget::on_clicked_clearButton);
 }
 
 void PlaylistWidget::resizeEvent(QResizeEvent* e)
@@ -22,7 +27,8 @@ void PlaylistWidget::resizeEvent(QResizeEvent* e)
 	mTitle->setFixedSize(width(),headerY());
 	mView->move(0,headerY());
 	mView->setFixedSize(width(),height()-headerY());
-	mAddButton->move(width()-mAddButton->width(),0);
+    mAddButton->move(width()-mAddButton->width(),0);
+    mClearButton->move(mAddButton->x()-mClearButton->width()-5,0);
 }
 
 void PlaylistWidget::setPlayer(MusicPlayer* player)
@@ -43,10 +49,14 @@ void PlaylistWidget::setPlayer(MusicPlayer* player)
 
 void PlaylistWidget::on_clicked_addButton()
 {
-	QSettings settings;
-	QFileDialog dialog(this,tr("Add Musics"),settings.value("Playlist/open_dir",QString()).toString());
+    QSettings setting("../data/settings.ini",QSettings::IniFormat);
+    QFileDialog dialog(this,tr("Add Musics"),setting.value("PlaylistFileDialog/open_dir",QString()).toString());
 	dialog.setAcceptMode(QFileDialog::AcceptOpen);
 	dialog.setFileMode(QFileDialog::ExistingFiles);
+    dialog.setNameFilters({
+                              tr("Music Files (*.mp3 *.ogg *.flac *.wav *.wma)"),
+                              tr("All Files (*)")
+                          });
 	if(dialog.exec())
 	{
 		auto fileNames = dialog.selectedFiles();
@@ -54,9 +64,9 @@ void PlaylistWidget::on_clicked_addButton()
 		if(fileNames.isEmpty()){
 			return;
 		}else{
-			settings.beginGroup("Playlist");
-			settings.setValue("open_dir",dialog.directory().path());
-			settings.endGroup();
+			setting.beginGroup("PlaylistFileDialog");
+			setting.setValue("open_dir",dialog.directory().path());
+			setting.endGroup( );
 		}
 		for(QString fileName:fileNames){
 			MusicObject obj;
@@ -68,6 +78,11 @@ void PlaylistWidget::on_clicked_addButton()
 		mModel->player()->playAt(beginIndex);
 	}
 
+}
+
+void PlaylistWidget::on_clicked_clearButton()
+{
+    mModel->player()->clearAllMusic();
 }
 
 int PlaylistWidget::headerY()

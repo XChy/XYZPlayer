@@ -18,7 +18,7 @@ class PlaylistWidget : public QWidget
 	Q_OBJECT
 
 public:
-	explicit PlaylistWidget(QWidget *parent = 0);
+	explicit PlaylistWidget(QWidget* parent = 0);
 
 	void resizeEvent(QResizeEvent* e);
 
@@ -26,11 +26,13 @@ public:
 
 public slots:
 	void on_clicked_addButton();
+    void on_clicked_clearButton();
 private:
 	PlaylistView* mView;
 	PlaylistModel* mModel;
 	QLabel* mTitle;
 	QPushButton* mAddButton;
+    QPushButton* mClearButton;
 
 	int headerY();
 };

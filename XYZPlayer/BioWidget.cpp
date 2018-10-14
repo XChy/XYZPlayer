@@ -6,6 +6,7 @@ BioWidget::BioWidget(QWidget *parent)
 	  mPictureLabel(new QLabel(this))
 {
 	mPictureLabel->move(0,0);
+	mPictureLabel->setObjectName("PictureLabel");
 	mPictureLabel->setAlignment(Qt::AlignCenter);
 }
 
@@ -37,7 +38,7 @@ void BioWidget::setPlayer(MusicPlayer* player)
 void BioWidget::updatePicture()
 {
 	if(mPlayer->currentIndex()!=-1){
-		mPictureLabel->setPixmap(QPixmap::fromImage(mPlayer->currentMusic().picture.scaled(mPictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation)));
+        mPictureLabel->setPixmap(mPlayer->currentMusic().picture.scaled(mPictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
 		if(mPictureLabel->pixmap()->isNull())mPictureLabel->setText(tr("No image"));
 	}else{
 		mPictureLabel->setPixmap(QPixmap());

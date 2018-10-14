@@ -73,29 +73,33 @@ bool PlaylistModel::canDropMimeData(const QMimeData* data, Qt::DropAction action
 bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent){
 	if (action == Qt::IgnoreAction)
 		return true;
-	if (!data->hasUrls())
-		return false;
+	if (data->hasUrls()){
 
-	int insertIndex;
-	if (row != -1)
-		insertIndex = row;
-	else if (parent.isValid())
-		insertIndex = parent.row();
-	else
-		insertIndex = rowCount();
+		int insertIndex;
+		if (row != -1)
+			insertIndex = row;
+		else if (parent.isValid())
+			insertIndex = parent.row();
+		else
+			insertIndex = rowCount();
 
-	int beginIndex=insertIndex;
+		int beginIndex=insertIndex;
 
-	for(QUrl url:data->urls()){
-		MusicObject obj;
-		obj.path=url.toLocalFile();
-		obj.lyrics.path=url.toLocalFile().left(url.toLocalFile().lastIndexOf('.')).append(".lrc");
-		mPlayer->insertMusic(insertIndex,obj);
-		++insertIndex;
+		for(QUrl url:data->urls()){
+			MusicObject obj;
+			obj.path=url.toLocalFile();
+			obj.lyrics.path=url.toLocalFile().left(url.toLocalFile().lastIndexOf('.')).append(".lrc");
+			mPlayer->insertMusic(insertIndex,obj);
+			++insertIndex;
+		}
+		mPlayer->asyncLoadInfo(beginIndex,insertIndex);
+		mPlayer->playAt(beginIndex);
+		return true;
+	}else if(action==Qt::MoveAction){
+
 	}
-	mPlayer->asyncLoadInfo(beginIndex,insertIndex);
-	mPlayer->playAt(beginIndex);
-	return true;
+
+	return false;
 }
 
 bool PlaylistModel::setData(const QModelIndex& index, const QVariant& v, int role)
@@ -105,6 +109,7 @@ bool PlaylistModel::setData(const QModelIndex& index, const QVariant& v, int rol
 
 void PlaylistModel::onCurrentIndexChanged(int oldIndex, int newIndex)
 {
+	if(oldIndex==newIndex)return;
 	if(oldIndex==-1){
 		emit dataChanged(index(newIndex,0),index(newIndex,0));
 	}else if(newIndex==-1){

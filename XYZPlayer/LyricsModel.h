@@ -17,6 +17,8 @@ public:
 	void setPlayer(MusicPlayer* player);
 
 	virtual bool setData(const QModelIndex& index, const QVariant& v, int role = Qt::EditRole);
+signals:
+	void lyricIndexChanged(QModelIndex index);
 public slots:
 	void onPositionChanged(int64_t pos);
 	void onCurrentIndexChanged(int oldIndex,int newIndex);

@@ -11,9 +11,12 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = XYZPlayer
 TEMPLATE = app
 
+QMAKE_TARGET_PRODUCT = XYZPlayer
+QMAKE_TARGET_DESCRIPTION = XYZPlayer
+
 #QtAV path
-INCLUDEPATH+=D:\Library-Cpp\QtAV_lib\include
-LIBS+=-L D:\Library-Cpp\QtAV_lib\lib\ -lavcodec -lavdevice -lavfilter -lavformat -lavresample  -lavutil -lQtAV1 -lswresample -lswscale
+INCLUDEPATH+=D:\Library-Cpp\build-QtAV\include
+LIBS+=-L D:\Library-Cpp\build-QtAV\lib\ -lavcodec -lavdevice -lavfilter -lavformat -lavresample  -lavutil -lQtAV1 -lswresample -lswscale
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -28,7 +31,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
 	XYZPlayer/main.cpp \
-	XYZPlayer/MainWindow.cpp \
     XYZPlayer/MusicPlayer.cpp \
     XYZPlayer/MusicObject.cpp \
     XYZPlayer/PlaylistView.cpp \
@@ -39,10 +41,12 @@ SOURCES += \
     XYZPlayer/MusicUtil.cpp \
     XYZPlayer/LyricsWidget.cpp \
     XYZPlayer/LyricsModel.cpp \
-    XYZPlayer/LyricsView.cpp
+    XYZPlayer/LyricsView.cpp \
+    XYZPlayer/MusicPlaylist.cpp \
+    XYZPlayer/MainContent.cpp \
+    XYZPlayer/FramelessWindow.cpp
 
 HEADERS += \
-	XYZPlayer/MainWindow.h \
     XYZPlayer/MusicPlayer.h \
     XYZPlayer/MusicObject.h \
     XYZPlayer/PlaylistView.h \
@@ -53,7 +57,10 @@ HEADERS += \
     XYZPlayer/MusicUtil.h \
     XYZPlayer/LyricsWidget.h \
     XYZPlayer/LyricsModel.h \
-    XYZPlayer/LyricsView.h
+    XYZPlayer/LyricsView.h \
+    XYZPlayer/MusicPlaylist.h \
+    XYZPlayer/MainContent.h \
+    XYZPlayer/FramelessWindow.h
 
 FORMS += \
 	XYZPlayer/MainWindow.ui
@@ -61,8 +68,9 @@ FORMS += \
 RESOURCES += \
     res/res.qrc
 
-RC_ICONS=res/images/logo.ico
+ICON =res/images/logo.ico
+RC_ICONS = res/images/logo.ico
 
-TRANSLATIONS += zh_CN.ts
+TRANSLATIONS += languages/zh_CN.ts
 
 DISTFILES +=

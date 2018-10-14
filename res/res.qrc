@@ -12,5 +12,11 @@
         <file>images/easy/sequential.png</file>
         <file>images/easy/volume.png</file>
         <file>images/easy/add.png</file>
+        <file>images/easy/settings.png</file>
+        <file>images/easy/close.png</file>
+        <file>images/easy/minimize.png</file>
+        <file>images/easy/clear.png</file>
+        <file>images/easy/normalize.png</file>
+        <file>images/easy/maximize.png</file>
     </qresource>
 </RCC>

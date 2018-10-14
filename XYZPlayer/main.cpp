@@ -1,31 +1,33 @@
-#include "MainWindow.h"
 #include <QApplication>
 #include <QTranslator>
+#include "MainContent.h"
+#include "FramelessWindow.h"
 
-#ifdef Q_OS_WIN
+//#ifdef Q_OS_WIN
 
-#include <windows.h>
-LONG ApplicationCrashHandler(EXCEPTION_POINTERS *pException){//程式异常捕获
-	QSettings settings;
-	settings.sync();
-	return EXCEPTION_EXECUTE_HANDLER;
-}
+//#include <windows.h>
+//LONG ApplicationCrashHandler(EXCEPTION_POINTERS *pException){
+//	QSettings settings;
+//	settings.sync();
+//	return EXCEPTION_EXECUTE_HANDLER;
+//}
 
-#endif
+//#endif
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 	a.setApplicationName("XYZPlayer");
-#ifdef Q_OS_WIN
-	SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)ApplicationCrashHandler);
-#endif
+	a.setOrganizationName("XYZPlayer");
+//#ifdef Q_OS_WIN
+//	SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)ApplicationCrashHandler);
+//#endif
 	QTranslator translator;
-	translator.load("zh_CN");
+	translator.load("../languages/zh_CN");
 	a.installTranslator(&translator);
 	a.setStyleSheet(QStringLiteral("QMenu{"
 								   "background-color:white;"
-								   "border: 1px solid #b2b2b2;"
+                                   "border: 1px solid #b2b2b2;"
 								   "}"
 								   "QMenuBar{"
 								   "background-color:white;"
@@ -65,18 +67,24 @@ int main(int argc, char *argv[])
 								   "image: none;"
 								   "}"
 								   "#titleBar{"
-								   "border-bottom: 1px solid #b2b2b2;"
+                                   "border-bottom: 1px solid #b2b2b2;"
 								   "}"
 								   "#footerWidget{"
-								   "border-top: 1px solid #b2b2b2;"
+                                   "border-top: 1px solid #b2b2b2;"
 								   "}"
 								   "#artistLabel{"
 								   "font-size:14px;"
+								   "font-family:宋体;"
 								   "color:#666666;"
 								   "}"
 								   "#titleLabel{"
 								   "font-size:13px;"
+								   "font-family:宋体;"
 								   "color:black;"
+								   "}"
+								   "#PictureLabel{"
+								   "font-size:14px;"
+								   "font-family:宋体;"
 								   "}"
 								   "#musicsLabel,#bioLabel,#lyricsLabel{"
 								   "font-size:20px;"
@@ -86,6 +94,27 @@ int main(int argc, char *argv[])
 								   "#AddButton{"
 								   "border-image:url(:/images/easy/add.png);"
 								   "}"
+                                   "#ClearButton{"
+                                   "border-image:url(:/images/easy/clear.png);"
+                                   "}"
+								   "#settingButton{"
+                                   "border-image:url(:/images/easy/settings.png);"
+								   "}"
+								   "#closeButton{"
+								   "border-image:url(:/images/easy/close.png);"
+                                   "}"
+								   "#minButton{"
+                                   "border-image:url(:/images/easy/minimize.png);"
+								   "}"
+                                   "#maxButton[isMaximized=false]{"
+                                   "border-image:url(:/images/easy/maximize.png);"
+								   "}"
+                                   "#maxButton[isMaximized=false]{"
+                                   "border-image:url(:/images/easy/maximize.png);"
+                                   "}"
+                                   "#maxButton[isMaximized=true]{"
+                                   "border-image:url(:/images/easy/normalize.png);"
+                                   "}"
 								   "#musicsLabel[is_current=true],#bioLabel[is_current=true],#lyricsLabel[is_current=true]{"
 								   "color:#00a1ec;"
 								   "}"
@@ -106,7 +135,7 @@ int main(int argc, char *argv[])
 								   "background-color:#00a1ec;"
 								   "}"
 								   "QMainWindow{"
-								   "background-color:white;"
+                                   "background-color:white;"
 								   "}"
 								   "#PlaylistView,#LocalMusicView{"
 								   "color: black;"
@@ -171,20 +200,35 @@ int main(int argc, char *argv[])
 								   "background-color:white;"
 								   "alternate-background-color:#eeeeee;"
 								   "selection-color:black;"
-								   "selection-background-color:#cccccc;"
+                                   "selection-background-color:#dddddd;"
 								   "border-radius: 0px;"
 								   "padding: 2px 4px;"
 								   "}"
 								   "LyricsView{"
-								   "selection-background-color:#cccccc;"
+                                   "selection-background-color:#dddddd;"
 								   "border: none;"
-								   "}"
-								   "QMainWindow{"
-								   "border: 0.5px solid #b2b2b2;"
-								   "}"
+                                   "}"
 								   ));
-	MainWindow w;
-	w.show();
-	w.player()->asyncLoadAllInfo();
-	return a.exec();
+    FramelessWindow* wrapper=new FramelessWindow;
+	wrapper->resize(900,700);
+	MusicUtil::loadMainWindowSetting(wrapper);
+	MainContent* w=new MainContent;
+
+	QObject::connect(w,&MainContent::minimizeRequested,wrapper,&FramelessWindow::showMinimized);
+	QObject::connect(w,&MainContent::toggleMaximizeRequested,wrapper,&FramelessWindow::toggleMaximize);
+	QObject::connect(w,&MainContent::closeRequested,wrapper,&FramelessWindow::close);
+	QObject::connect(wrapper,&FramelessWindow::windowStateChanged,w,&MainContent::updateMaximumButton);
+
+	w->updateMaximumButton(wrapper->windowState());
+
+	wrapper->setContent(w);
+    wrapper->setTitleBar(w->titleBar());
+
+	wrapper->show();
+
+    w->player()->asyncLoadAllInfo();
+    int ret=a.exec();
+    MusicUtil::saveMainWindowSetting(wrapper);
+	delete wrapper;
+	return ret;
 }

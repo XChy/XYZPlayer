@@ -87,6 +87,5 @@ void LyricItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
 	painter->setFont(QFont("微软雅黑"));
 	QTextOption textOption;
 	textOption.setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
-	painter->drawText(option.rect,elidedText(
-						  painter->fontMetrics(),option.rect.width(),Qt::ElideRight,index.data().toString()),textOption);
+	painter->drawText(option.rect,index.data().toString(),textOption);
 }

@@ -9,7 +9,7 @@ MusicPlayer::MusicPlayer(QObject* parent)
 	  mPictureBeginLoadIndex(0)
 {
 	setAutoLoad();
-	mInfoLoaderWatcher.setPendingResultsLimit(5);
+	mInfoLoaderWatcher.setPendingResultsLimit(3);
 	connect(this,&MusicPlayer::mediaStatusChanged,this,&MusicPlayer::onMediaStatusChanged);
 
 	connect(&mInfoLoaderWatcher,&QFutureWatcher<int>::resultReadyAt,[this](int index){
@@ -46,6 +46,7 @@ PlaybackMode MusicPlayer::playbackMode() const
 void MusicPlayer::setPlaybackMode(const PlaybackMode& playbackMode)
 {
 	mPlaybackMode = playbackMode;
+	emit playbackModeChanged(playbackMode);
 }
 
 int MusicPlayer::currentIndex() const
@@ -56,11 +57,13 @@ int MusicPlayer::currentIndex() const
 void MusicPlayer::setCurrentIndex(int currentIndex)
 {
 	int oldIndex=mCurrentIndex;
-	mCurrentIndex = currentIndex;
-	setFile(QString());
+    mCurrentIndex = currentIndex;
 	if(mCurrentIndex!=-1){
 		setFile(currentMusic().path);
-	}
+    }else{
+        setFile(QString());
+        stop();
+    }
 	emit currentIndexChanged(oldIndex,currentIndex);
 }
 
@@ -101,13 +104,21 @@ void MusicPlayer::removeMusic(int index)
 			playNext();
 			if(mCurrentIndex){
 				--mCurrentIndex;
+				emit currentIndexChanged(-1,mCurrentIndex);
 			}
 		}
 	}else if(index<mCurrentIndex){
 		--mCurrentIndex;
 	}
 	mPlaylist.removeAt(index);
-	emit playlistElementsChanged();
+    emit playlistElementsChanged();
+}
+
+void MusicPlayer::clearAllMusic()
+{
+    setCurrentIndex(-1);
+    mPlaylist.clear();
+    emit playlistElementsChanged();
 }
 
 void MusicPlayer::playAt(int index)
@@ -225,7 +236,7 @@ void MusicPlayer::unLoadPicture(int index)
 {
 	if(mPictureLoaderWatcher.isRunning())
 		mPictureLoaderWatcher.cancel();
-	mPlaylist[index].picture=QImage();
+    mPlaylist[index].picture=QPixmap();
 }
 
 void MusicPlayer::unLoadLyrics(int index)

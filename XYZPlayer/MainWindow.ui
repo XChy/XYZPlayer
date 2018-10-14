@@ -41,6 +41,15 @@
       <property name="spacing">
        <number>0</number>
       </property>
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
       <item>
        <widget class="QWidget" name="titleBar" native="true">
         <property name="sizePolicy">
@@ -57,13 +66,13 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="leftMargin">
-          <number>4</number>
+          <number>0</number>
          </property>
          <property name="topMargin">
           <number>0</number>
          </property>
          <property name="rightMargin">
-          <number>4</number>
+          <number>0</number>
          </property>
          <property name="bottomMargin">
           <number>0</number>
@@ -71,6 +80,12 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <property name="spacing">
+            <number>6</number>
+           </property>
+           <property name="leftMargin">
+            <number>6</number>
+           </property>
+           <property name="rightMargin">
             <number>6</number>
            </property>
            <item>
@@ -125,6 +140,38 @@
             </widget>
            </item>
            <item>
+            <spacer name="horizontalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="logoLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>32</width>
+               <height>32</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
             <spacer name="horizontalSpacer">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -150,9 +197,12 @@
              </property>
              <property name="minimumSize">
               <size>
-               <width>20</width>
-               <height>20</height>
+               <width>32</width>
+               <height>32</height>
               </size>
+             </property>
+             <property name="cursor">
+              <cursorShape>PointingHandCursor</cursorShape>
              </property>
              <property name="text">
               <string/>
@@ -169,8 +219,8 @@
              </property>
              <property name="minimumSize">
               <size>
-               <width>20</width>
-               <height>20</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="text">
@@ -188,8 +238,8 @@
              </property>
              <property name="minimumSize">
               <size>
-               <width>20</width>
-               <height>20</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="text">
@@ -207,8 +257,8 @@
              </property>
              <property name="minimumSize">
               <size>
-               <width>20</width>
-               <height>20</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="text">
@@ -634,16 +684,6 @@
     </item>
    </layout>
   </widget>
-  <action name="OpenAction">
-   <property name="text">
-    <string>Open</string>
-   </property>
-  </action>
-  <action name="musicsAction">
-   <property name="text">
-    <string>Musics</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>

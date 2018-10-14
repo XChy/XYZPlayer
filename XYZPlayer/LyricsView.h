@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QContextMenuEvent>
 #include <QMenu>
+#include <XYZPlayer/LyricsModel.h>
 
 class LyricsView : public QListView
 {
@@ -14,6 +15,9 @@ public:
 	LyricsView(QWidget* parent=0);
 
 	void contextMenuEvent(QContextMenuEvent *e);
+public slots:
+	void setModel(LyricsModel* model);
+	LyricsModel* model();
 private:
 	QMenu* mPopupMenu;
 };

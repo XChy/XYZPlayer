@@ -20,6 +20,7 @@ public:
 	void setPlayer(MusicPlayer* player);
 private:
 	MusicPlayer* mPlayer;
+    QLabel* mLabelWhenNoLyrics;
 	LyricsModel* mModel;
 	LyricsView* mView;
 };

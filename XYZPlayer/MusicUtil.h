@@ -12,7 +12,7 @@ extern "C"{
 #include <QStandardPaths>
 
 class MusicPlayer;
-class MainWindow;
+class MainContent;
 
 namespace MusicUtil{
 enum LyricsError{
@@ -24,8 +24,8 @@ enum LyricsError{
 void savePlayerSetting(MusicPlayer* player);
 void loadPlayerSetting(MusicPlayer* player);
 
-void saveMainWindowSetting(MainWindow* window );
-void loadMainWindowSetting(MainWindow* window);
+void saveMainWindowSetting(QWidget* window );
+void loadMainWindowSetting(QWidget* window);
 
 void savePlaylist(MusicPlayer* player );
 void loadPlaylist(MusicPlayer* player);

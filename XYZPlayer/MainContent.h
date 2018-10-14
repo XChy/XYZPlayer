@@ -3,10 +3,11 @@
 
 #include <QMainWindow>
 #include <QPainter>
+#include <QDesktopWidget>
 #include <QWidgetAction>
-#include <QFileDialog>
 #include <QSlider>
 #include <QToolTip>
+#include <QEvent>
 #include <XYZPlayer/MusicPlayer.h>
 #include <XYZPlayer/PlaylistWidget.h>
 #include <XYZPlayer/ItemDelegates.h>
@@ -15,17 +16,26 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainContent : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	explicit MainWindow(QWidget *parent = 0);
-	~MainWindow();
+	explicit MainContent(QWidget *parent = 0);
+	~MainContent();
 
 	MusicPlayer* player() const;
+	QWidget* titleBar() const;
 
-	bool eventFilter(QObject *watched, QEvent *event);
+    bool eventFilter(QObject *watched, QEvent *event);
+signals:
+	void closeRequested();
+	void minimizeRequested();
+	void toggleMaximizeRequested();
+public slots:
+	void updateMaximumButton(Qt::WindowStates state);
+	void updatePlaybackModeButton(PlaybackMode mode);
+
 private slots:
 	void onCurrentIndexChanged(int oldIndex,int newIndex);
 	void onInfoLoaded(int index);
