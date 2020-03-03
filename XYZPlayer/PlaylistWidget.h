@@ -28,11 +28,11 @@ public slots:
 	void on_clicked_addButton();
     void on_clicked_clearButton();
 private:
-	PlaylistView* mView;
-	PlaylistModel* mModel;
-	QLabel* mTitle;
-	QPushButton* mAddButton;
-    QPushButton* mClearButton;
+	PlaylistView* _view;
+	PlaylistModel* _model;
+	QLabel* _title;
+	QPushButton* _addButton;
+    QPushButton* _clearButton;
 
 	int headerY();
 };

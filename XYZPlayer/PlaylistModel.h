@@ -37,7 +37,7 @@ public slots:
 	void onInfoLoaded(int index);
 	void refresh();
 private:
-	MusicPlayer* mPlayer;
+	MusicPlayer* _player;
 };
 
 #endif // PLAYLISTMODEL_H

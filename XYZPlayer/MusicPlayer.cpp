@@ -57,13 +57,13 @@ int MusicPlayer::currentIndex() const
 void MusicPlayer::setCurrentIndex(int currentIndex)
 {
 	int oldIndex=mCurrentIndex;
-    mCurrentIndex = currentIndex;
+	mCurrentIndex = currentIndex;
 	if(mCurrentIndex!=-1){
 		setFile(currentMusic().path);
-    }else{
-        setFile(QString());
-        stop();
-    }
+	}else{
+		setFile(QString());
+		stop();
+	}
 	emit currentIndexChanged(oldIndex,currentIndex);
 }
 
@@ -111,14 +111,14 @@ void MusicPlayer::removeMusic(int index)
 		--mCurrentIndex;
 	}
 	mPlaylist.removeAt(index);
-    emit playlistElementsChanged();
+	emit playlistElementsChanged();
 }
 
 void MusicPlayer::clearAllMusic()
 {
-    setCurrentIndex(-1);
-    mPlaylist.clear();
-    emit playlistElementsChanged();
+	setCurrentIndex(-1);
+	mPlaylist.clear();
+	emit playlistElementsChanged();
 }
 
 void MusicPlayer::playAt(int index)
@@ -149,35 +149,35 @@ void MusicPlayer::playPrev()
 void MusicPlayer::playback()
 {
 	switch (mPlaybackMode) {
-		case Loop:
-			playNext();
-			break;
-		case CurrentItemLoop:
-			playAt(mCurrentIndex);
-			break;
-		case Sequential:
-			if(mCurrentIndex!=mPlaylist.size()-1){
-				playAt(mCurrentIndex+1);
-			}
-			break;
-		case Random:
-			if(!mPlaylist.isEmpty()){
-				playAt(qrand()%mPlaylist.size());
-			}
-			break;
+	case Loop:
+		playNext();
+		break;
+	case CurrentItemLoop:
+		playAt(mCurrentIndex);
+		break;
+	case Sequential:
+		if(mCurrentIndex!=mPlaylist.size()-1){
+			playAt(mCurrentIndex+1);
+		}
+		break;
+	case Random:
+		if(!mPlaylist.isEmpty()){
+			playAt(qrand()%mPlaylist.size());
+		}
+		break;
 	}
 }
 
 bool MusicPlayer::canPlayback() const
 {
 	switch (mPlaybackMode) {
-		case Loop:
-		case CurrentItemLoop:
-		case Random:
-			return !mPlaylist.isEmpty();
+	case Loop:
+	case CurrentItemLoop:
+	case Random:
+		return !mPlaylist.isEmpty();
 
-		case Sequential:
-			return mCurrentIndex!=mPlaylist.size()-1;
+	case Sequential:
+		return mCurrentIndex!=mPlaylist.size()-1;
 	}
 	return false;
 }
@@ -195,7 +195,10 @@ void MusicPlayer::loadPicture(int index)
 
 void MusicPlayer::loadLyrics(int index)
 {
-	MusicUtil::loadLyrics(mPlaylist[index]);
+	MusicUtil::LyricsError error=MusicUtil::loadLyrics(mPlaylist[index]);
+	if(!error){
+
+	}
 	emit lyricsLoaded(index);
 }
 
@@ -236,7 +239,7 @@ void MusicPlayer::unLoadPicture(int index)
 {
 	if(mPictureLoaderWatcher.isRunning())
 		mPictureLoaderWatcher.cancel();
-    mPlaylist[index].picture=QPixmap();
+	mPlaylist[index].picture=QPixmap();
 }
 
 void MusicPlayer::unLoadLyrics(int index)

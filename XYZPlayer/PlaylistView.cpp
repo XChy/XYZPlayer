@@ -2,7 +2,7 @@
 
 PlaylistView::PlaylistView(QWidget* parent)
 	:QTableView(parent)
-	,mPopupMenu(new QMenu(this))
+	,_opupMenu(new QMenu(this))
 {
 	setDragDropMode(QAbstractItemView::DragDrop);
 	setDragEnabled(true);
@@ -11,25 +11,31 @@ PlaylistView::PlaylistView(QWidget* parent)
 	verticalHeader()->setVisible(false);
 	horizontalHeader()->setVisible(false);
 
-	mPopupMenu->addAction(tr("Play"),[&](){
+	_opupMenu->addAction(tr("Play"),[&](){
 		model()->player()->playAt(selectionModel()->currentIndex().row());
 	});
-	mPopupMenu->addAction(tr("Copy title"),[&](){
+	_opupMenu->addAction(tr("Open in explorer"),[&](){
+		QString path=model()->player()->playlist().at(selectionModel()->currentIndex().row()).path;
+		QDesktopServices::openUrl(QUrl("file:///"+
+									  path.left(path.lastIndexOf("/"))
+								  ));
+	});
+	_opupMenu->addAction(tr("Copy title"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["title"]
 				);
     });
-	mPopupMenu->addAction(tr("Copy artist"),[&](){
+	_opupMenu->addAction(tr("Copy artist"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["artist"]
 				);
 	});
-	mPopupMenu->addAction(tr("Copy album"),[&](){
+	_opupMenu->addAction(tr("Copy album"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["album"]
 				);
 	});
-	mPopupMenu->addAction(tr("Remove"),[&](){
+	_opupMenu->addAction(tr("Remove"),[&](){
 		int offset=0;
 		for(QModelIndex& index:selectionModel()->selectedRows()){
 			model()->player()->removeMusic(index.row()-offset);
@@ -49,11 +55,11 @@ void PlaylistView::contextMenuEvent(QContextMenuEvent* e)
 			if(!selectionModel()->isSelected(index)){
 				selectionModel()->setCurrentIndex(index,QItemSelectionModel::ClearAndSelect|QItemSelectionModel::Rows);
 			}
-			mPopupMenu->exec(e->globalPos());
+			_opupMenu->exec(e->globalPos());
 			e->accept();
 		}else{
 			selectionModel()->setCurrentIndex(indexAt(pos),QItemSelectionModel::Select|QItemSelectionModel::Rows);
-			mPopupMenu->exec(e->globalPos());
+			_opupMenu->exec(e->globalPos());
 			e->accept();
 		}
 	}

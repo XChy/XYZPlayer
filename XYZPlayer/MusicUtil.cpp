@@ -30,11 +30,13 @@ LyricsError loadLyrics(MusicObject& music)
                         lyricsMap[pos]=lyricsStr;
                     }
                 }else{
+					music.lyrics.lyricList.clear();
                     return ParseError;
                 }
             }else if(line[0]=='\n'){
                 continue;
             }else{
+				music.lyrics.lyricList.clear();
                 return ParseError;
             }
         }
@@ -43,8 +45,11 @@ LyricsError loadLyrics(MusicObject& music)
         }
         return NoError;
     }else{
+		music.lyrics.lyricList.clear();
         return CannotOpenFile;
     }
+
+	return NoError;
 }
 
 int loadInfo(MusicObject& music)

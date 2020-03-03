@@ -3,14 +3,14 @@
 
 PlaylistModel::PlaylistModel(QObject* parent)
 	:QAbstractTableModel(parent),
-	  mPlayer(nullptr)
+	  _player(nullptr)
 {
 
 }
 
 int PlaylistModel::rowCount(const QModelIndex& parent) const
 {
-	return mPlayer->playlist().size();
+	return _player->playlist().size();
 }
 
 int PlaylistModel::columnCount(const QModelIndex& parent) const
@@ -26,13 +26,13 @@ QVariant PlaylistModel::data(const QModelIndex& index, int role) const
 		}
 		switch(index.column()){
 			case 0:
-				return mPlayer->currentIndex()==index.row();
+				return _player->currentIndex()==index.row();
 			case 1:
-				return mPlayer->playlist()[index.row()].infoTags["title"];
+				return _player->playlist()[index.row()].infoTags["title"];
 			case 2:
-				return mPlayer->playlist()[index.row()].infoTags["artist"];
+				return _player->playlist()[index.row()].infoTags["artist"];
 			case 3:
-				return mPlayer->playlist()[index.row()].duration;
+				return _player->playlist()[index.row()].duration;
 		}
 	}
 	return QVariant();
@@ -89,11 +89,11 @@ bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, i
 			MusicObject obj;
 			obj.path=url.toLocalFile();
 			obj.lyrics.path=url.toLocalFile().left(url.toLocalFile().lastIndexOf('.')).append(".lrc");
-			mPlayer->insertMusic(insertIndex,obj);
+			_player->insertMusic(insertIndex,obj);
 			++insertIndex;
 		}
-		mPlayer->asyncLoadInfo(beginIndex,insertIndex);
-		mPlayer->playAt(beginIndex);
+		_player->asyncLoadInfo(beginIndex,insertIndex);
+		_player->playAt(beginIndex);
 		return true;
 	}else if(action==Qt::MoveAction){
 
@@ -133,7 +133,7 @@ void PlaylistModel::refresh()
 
 MusicPlayer* PlaylistModel::player() const
 {
-	return mPlayer;
+	return _player;
 }
 
 void PlaylistModel::setPlayer(MusicPlayer* player)
@@ -143,10 +143,10 @@ void PlaylistModel::setPlayer(MusicPlayer* player)
 		connect(player,&MusicPlayer::infoLoaded,this,&PlaylistModel::onInfoLoaded);
 		connect(player,&MusicPlayer::playlistElementsChanged,this,&PlaylistModel::refresh);
 	}
-	if(mPlayer){
-		disconnect(mPlayer,&MusicPlayer::currentIndexChanged,this,&PlaylistModel::onCurrentIndexChanged);
-		disconnect(mPlayer,&MusicPlayer::infoLoaded,this,&PlaylistModel::onInfoLoaded);
-		disconnect(mPlayer,&MusicPlayer::playlistElementsChanged,this,&PlaylistModel::refresh);
+	if(_player){
+		disconnect(_player,&MusicPlayer::currentIndexChanged,this,&PlaylistModel::onCurrentIndexChanged);
+		disconnect(_player,&MusicPlayer::infoLoaded,this,&PlaylistModel::onInfoLoaded);
+		disconnect(_player,&MusicPlayer::playlistElementsChanged,this,&PlaylistModel::refresh);
 	}
-	mPlayer = player;
+	_player = player;
 }

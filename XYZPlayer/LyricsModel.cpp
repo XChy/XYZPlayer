@@ -21,6 +21,8 @@ QVariant LyricsModel::data(const QModelIndex& index, int role) const
 		return mPlayer->currentMusic().lyrics.lyricList[index.row()].second;
 	}else if(role==Qt::UserRole){
 		return index.row()==lyricIndex;
+	}else if(role==Qt::UserRole+1){
+		return mPlayer->currentMusic().lyrics.lyricList[index.row()].first;
 	}
 	return QVariant();
 }
@@ -60,19 +62,11 @@ void LyricsModel::onPositionChanged(int64_t pos)
 	}else if(lyricsList.last().first<pos){
 		lyricIndex=lyricsList.size()-1;
 	}else{
-		if(lyricIndex!=lyricsList.size()-1&&pos>=lyricsList[lyricIndex+1].first){
-			++lyricIndex;
-		}else if(pos>=lyricsList[lyricIndex].first){
-			return;
-		}else if(pos>=lyricsList[lyricIndex-1].first){
-			--lyricIndex;
-		}else{
 			auto it=std::upper_bound(lyricsList.begin(),lyricsList.end(),QPair<int64_t,QString>(pos,QStringLiteral(""))
 									 ,[](const QPair<int64_t,QString>& v1,const QPair<int64_t,QString>& v2){
 				return v1.first<v2.first;
 			});
 			lyricIndex=it-lyricsList.begin()-1;
-		}
 	}
 	emit lyricIndexChanged(index(lyricIndex));
 	emit dataChanged(index(lyricIndex),index(lyricIndex));

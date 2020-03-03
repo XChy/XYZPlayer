@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QApplication>
 #include <QClipboard>
+#include <QDesktopServices>
 #include <XYZPlayer/PlaylistModel.h>
 
 class PlaylistView : public QTableView
@@ -20,7 +21,7 @@ public slots:
 	void setModel(PlaylistModel* model);
 	PlaylistModel* model();
 private:
-	QMenu* mPopupMenu;
+	QMenu* _opupMenu;
 };
 
 #endif // PLAYLISTVIEW_H

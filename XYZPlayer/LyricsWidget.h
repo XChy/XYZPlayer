@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QFileDialog>
+#include <QSettings>
+#include <QPushButton>
 #include <XYZPlayer/MusicPlayer.h>
 #include <XYZPlayer/LyricsView.h>
 #include <XYZPlayer/LyricsModel.h>
@@ -10,19 +13,24 @@
 
 class LyricsWidget : public QWidget
 {
-	Q_OBJECT
-public:
-	explicit LyricsWidget(QWidget *parent = nullptr);
+		Q_OBJECT
+	public:
+		explicit LyricsWidget(QWidget *parent = nullptr);
 
-	void resizeEvent(QResizeEvent* e);
+		void resizeEvent(QResizeEvent* e);
 
-	MusicPlayer* player() const;
-	void setPlayer(MusicPlayer* player);
-private:
-	MusicPlayer* mPlayer;
-    QLabel* mLabelWhenNoLyrics;
-	LyricsModel* mModel;
-	LyricsView* mView;
+		MusicPlayer* player() const;
+		void setPlayer(MusicPlayer* player);
+
+	public slots:
+		void onChooseLyrics();
+		void updateTipLabel();
+	private:
+		MusicPlayer* _player;
+		QLabel* _tipLabel;
+		LyricsModel* _model;
+		LyricsView* _view;
+		QPushButton* _chooseButton;
 };
 
 #endif // LYRICSWIDGET_H
