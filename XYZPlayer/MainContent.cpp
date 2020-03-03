@@ -4,7 +4,7 @@
 MainContent::MainContent(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow),
-	mPlayer(new MusicPlayer(QApplication::desktop())),
+	_player(new MusicPlayer(this)),
 	mVolumeMenu(new QMenu(this)),
 	mVolumeSlider(new QSlider)
 {
@@ -13,8 +13,8 @@ MainContent::MainContent(QWidget *parent) :
 	ui->setupUi(this);
 
 	ui->center->setSizes({300,width()-300});
-	ui->bioPage->setPlayer(mPlayer);
-	ui->lyricsPage->setPlayer(mPlayer);
+	ui->bioPage->setPlayer(_player);
+	ui->lyricsPage->setPlayer(_player);
 	ui->contentWidget->setCurrentWidget(ui->bioPage);
 
 	ui->bioLabel->setProperty("is_current",true);
@@ -30,14 +30,14 @@ MainContent::MainContent(QWidget *parent) :
 	mVolumeMenu->setNoReplayFor(ui->volumeButton);
 	mVolumeMenu->addActions({volumeAction});
 
-	ui->playlistWidget->setPlayer(mPlayer);
+	ui->playlistWidget->setPlayer(_player);
 
-	connect(mPlayer,&MusicPlayer::currentIndexChanged,this,&MainContent::onCurrentIndexChanged);
-	connect(mPlayer,&MusicPlayer::infoLoaded,this,&MainContent::onInfoLoaded,Qt::QueuedConnection);
+	connect(_player,&MusicPlayer::currentIndexChanged,this,&MainContent::onCurrentIndexChanged);
+	connect(_player,&MusicPlayer::infoLoaded,this,&MainContent::onInfoLoaded);
 	connect(ui->playButton,&QPushButton::clicked,this,&MainContent::on_clicked_playButton);
-	connect(mPlayer,&MusicPlayer::stateChanged,this,&MainContent::onStateChanged);
-	connect(ui->nextButton,&QPushButton::clicked,mPlayer,&MusicPlayer::playNext);
-	connect(ui->prevButton,&QPushButton::clicked,mPlayer,&MusicPlayer::playPrev);
+	connect(_player,&MusicPlayer::stateChanged,this,&MainContent::onStateChanged);
+	connect(ui->nextButton,&QPushButton::clicked,_player,&MusicPlayer::playNext);
+	connect(ui->prevButton,&QPushButton::clicked,_player,&MusicPlayer::playPrev);
 	connect(mVolumeSlider,&QSlider::valueChanged,this,&MainContent::onVolumeSliderValueChanged);
 	connect(ui->posSlider,&QSlider::sliderPressed,this,&MainContent::onPosSliderPressed);
 	connect(ui->posSlider,&QSlider::sliderMoved,this,&MainContent::onPosSliderMoved);
@@ -57,14 +57,14 @@ MainContent::MainContent(QWidget *parent) :
 	connect(ui->posSlider,&QSlider::sliderReleased,this,&MainContent::onPosSliderReleased);
 
 	connect(ui->playbackModeButton,&QPushButton::clicked,this,&MainContent::on_clicked_PlaybackModeButton);
-	connect(mPlayer,&MusicPlayer::playbackModeChanged,this,&MainContent::updatePlaybackModeButton);
+	connect(_player,&MusicPlayer::playbackModeChanged,this,&MainContent::updatePlaybackModeButton);
 
-	connect(mPlayer,&MusicPlayer::durationChanged,ui->posSlider,&QSlider::setMaximum);
-	connect(mPlayer,&MusicPlayer::positionChanged,ui->posSlider,&QSlider::setValue);
+	connect(_player,&MusicPlayer::durationChanged,ui->posSlider,&QSlider::setMaximum);
+	connect(_player,&MusicPlayer::positionChanged,ui->posSlider,&QSlider::setValue);
 
-	MusicUtil::loadPlaylist(mPlayer);
-	MusicUtil::loadPlayerSetting(mPlayer);
-	mVolumeSlider->setValue(mPlayer->audio()->volume()*100);
+	MusicUtil::loadPlaylist(_player);
+	MusicUtil::loadPlayerSetting(_player);
+	mVolumeSlider->setValue(_player->audio()->volume()*100);
 }
 
 void MainContent::onCurrentIndexChanged(int oldIndex, int newIndex)
@@ -75,8 +75,8 @@ void MainContent::onCurrentIndexChanged(int oldIndex, int newIndex)
 		ui->titleLabel->setFixedHeight(0);
 		ui->artistLabel->setFixedHeight(0);
 	}else{
-		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
-		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
+		QString title=ui->titleLabel->fontMetrics().elidedText(_player->currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
+		QString artist=ui->artistLabel->fontMetrics().elidedText(_player->currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
 		ui->titleLabel->setText(title);
 		ui->artistLabel->setText(artist);
 		ui->titleLabel->setFixedHeight(ui->titleLabel->sizeHint().height());
@@ -89,9 +89,9 @@ void MainContent::onCurrentIndexChanged(int oldIndex, int newIndex)
 
 void MainContent::onInfoLoaded(int index)
 {
-	if(index==mPlayer->currentIndex()){
-		QString title=ui->titleLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
-		QString artist=ui->artistLabel->fontMetrics().elidedText(mPlayer->currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
+	if(index==_player->currentIndex()){
+		QString title=ui->titleLabel->fontMetrics().elidedText(_player->currentMusic().infoTags["title"],Qt::ElideRight,ui->titleLabel->width());
+		QString artist=ui->artistLabel->fontMetrics().elidedText(_player->currentMusic().infoTags["artist"],Qt::ElideRight,ui->artistLabel->width());
 		ui->titleLabel->setFixedHeight(ui->titleLabel->sizeHint().height());
 		ui->artistLabel->setFixedHeight(ui->artistLabel->sizeHint().height());
 		ui->titleLabel->setText(title);
@@ -101,19 +101,19 @@ void MainContent::onInfoLoaded(int index)
 
 void MainContent::on_clicked_playButton()
 {
-	if(mPlayer->isPlaying()){
-		mPlayer->pause(!mPlayer->isPaused());
+	if(_player->isPlaying()){
+		_player->pause(!_player->isPaused());
 	}else{
-		mPlayer->play();
+		_player->play();
 	}
-	ui->playButton->setProperty("is_playing",!mPlayer->isPaused()&&mPlayer->isPlaying());
+	ui->playButton->setProperty("is_playing",!_player->isPaused()&&_player->isPlaying());
 	ui->playButton->style()->unpolish(ui->playButton);
 	ui->playButton->style()->polish(ui->playButton);
 	ui->playButton->update();
 }
 void MainContent::onVolumeSliderValueChanged(int value)
 {
-	mPlayer->audio()->setVolume(qreal(value)/100);
+	_player->audio()->setVolume(qreal(value)/100);
 }
 
 void MainContent::updatePlaybackModeButton(PlaybackMode mode)
@@ -143,7 +143,7 @@ void MainContent::updatePlaybackModeButton(PlaybackMode mode)
 
 void MainContent::on_clicked_PlaybackModeButton()
 {
-	mPlayer->setPlaybackMode(mPlayer->playbackMode() != Random ? PlaybackMode(mPlayer->playbackMode()+1) : Loop);
+	_player->setPlaybackMode(_player->playbackMode() != Random ? PlaybackMode(_player->playbackMode()+1) : Loop);
 }
 
 void MainContent::on_clicked_VolumeButton()
@@ -156,25 +156,25 @@ void MainContent::on_clicked_VolumeButton()
 
 void MainContent::onPosSliderPressed()
 {
-	mPlayer->audio()->close();
-	mPlayer->audio()->clear();
+	_player->audio()->close();
+	_player->audio()->clear();
 }
 
 void MainContent::onPosSliderMoved(int pos)
 {
-	mPlayer->setPosition(pos);
+	_player->setPosition(pos);
 }
 
 void MainContent::onPosSliderReleased()
 {
-	if(mPlayer->currentIndex()!=-1){
-		mPlayer->audio()->open();
+	if(_player->currentIndex()!=-1){
+		_player->audio()->open();
 	}
 }
 
 void MainContent::onStateChanged()
 {
-	ui->playButton->setProperty("is_playing",(!mPlayer->isPaused()&&mPlayer->isPlaying())||mPlayer->canPlayback());
+	ui->playButton->setProperty("is_playing",(!_player->isPaused()&&_player->isPlaying())||_player->canPlayback());
 	style()->unpolish(ui->playButton);
 	style()->polish(ui->playButton);
 	ui->playButton->update();
@@ -182,7 +182,7 @@ void MainContent::onStateChanged()
 
 MusicPlayer* MainContent::player() const
 {
-	return mPlayer;
+	return _player;
 }
 
 QWidget*MainContent::titleBar() const
@@ -234,7 +234,7 @@ void MainContent::updateMaximumButton(Qt::WindowStates state)
 
 MainContent::~MainContent()
 {
-	MusicUtil::savePlaylist(mPlayer);
-	MusicUtil::savePlayerSetting(mPlayer);
+	MusicUtil::savePlaylist(_player);
+	MusicUtil::savePlayerSetting(_player);
 	delete ui;
 }

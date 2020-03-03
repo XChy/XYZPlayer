@@ -20,6 +20,7 @@ LyricsWidget::LyricsWidget(QWidget *parent)
 	_tipLabel->setText(tr("No lyrics found, Please click the button to choose lyrics"));
 
 	_chooseButton->setText(tr("Choose lyrics"));
+	_chooseButton->raise();
 	_chooseButton->move(width()-_chooseButton->width(),
 						height()-_chooseButton->height());
 
@@ -78,7 +79,7 @@ void LyricsWidget::onChooseLyrics()
 
 void LyricsWidget::updateTipLabel()
 {
-	if(_player->currentIndex() && _player->currentMusic().lyrics.lyricList.isEmpty()){
+	if(_player->currentIndex()!=-1 && _player->currentMusic().lyrics.lyricList.isEmpty()){
 		_tipLabel->show();
 	}else{
 		_tipLabel->hide();

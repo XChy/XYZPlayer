@@ -45,6 +45,10 @@ public:
 		out<<data.path<<data.lyrics.path;
 		return out;
 	}
+
+	bool operator==(const MusicObject& obj){
+		return this==&obj;
+	}
 };
 
 #endif // MUSICOBJECT_H

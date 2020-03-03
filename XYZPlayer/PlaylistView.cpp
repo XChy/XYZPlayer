@@ -36,10 +36,8 @@ PlaylistView::PlaylistView(QWidget* parent)
 				);
 	});
 	_opupMenu->addAction(tr("Remove"),[&](){
-		int offset=0;
-		for(QModelIndex& index:selectionModel()->selectedRows()){
-			model()->player()->removeMusic(index.row()-offset);
-			++offset;
+		for(QItemSelectionRange index:selectionModel()->selection()){
+			model()->player()->removeMusics(index.top(),index.bottom()+1);
 		}
 	});
 

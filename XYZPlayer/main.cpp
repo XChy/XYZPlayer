@@ -209,6 +209,10 @@ int main(int argc, char *argv[])
 								   "border: none;"
                                    "}"
 								   ));
+
+	QtAV::setLogLevel(QtAV::LogOff);
+	QtAV::setFFmpegLogLevel("quiet");
+
     FramelessWindow* wrapper=new FramelessWindow;
 	wrapper->resize(900,700);
 	MusicUtil::loadMainWindowSetting(wrapper);
@@ -228,7 +232,7 @@ int main(int argc, char *argv[])
 
     w->player()->asyncLoadAllInfo();
     int ret=a.exec();
-    MusicUtil::saveMainWindowSetting(wrapper);
+	MusicUtil::saveMainWindowSetting(wrapper);
 	delete wrapper;
 	return ret;
 }

@@ -125,11 +125,11 @@ void savePlayerSetting(MusicPlayer* player)
     setting.setValue("playback_mode",qint32(player->playbackMode()));
     setting.endGroup();
 }
-
+#include <QDebug>
 void loadPlayerSetting(MusicPlayer* player)
 {
     QSettings setting("../data/settings.ini",QSettings::IniFormat);
-    player->audio()->setVolume(setting.value("Player/volume",qreal(1)).toReal());
+	player->audio()->setVolume(setting.value("Player/volume",qreal(1)).toReal());
     player->setCurrentIndex(setting.value("Player/current_index",-1).toInt());
     player->setPlaybackMode(PlaybackMode(setting.value("Player/playback_mode",qint32(Loop)).toInt()));
 }

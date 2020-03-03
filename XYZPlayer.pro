@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui concurrent
+QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -30,6 +30,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    XYZPlayer/LocalmusicWidget.cpp \
+    XYZPlayer/MusicLoader.cpp \
+    XYZPlayer/SettingsDialog.cpp \
 	XYZPlayer/main.cpp \
     XYZPlayer/MusicPlayer.cpp \
     XYZPlayer/MusicObject.cpp \
@@ -42,12 +45,12 @@ SOURCES += \
     XYZPlayer/LyricsWidget.cpp \
     XYZPlayer/LyricsModel.cpp \
     XYZPlayer/LyricsView.cpp \
-    XYZPlayer/MusicPlaylist.cpp \
     XYZPlayer/MainContent.cpp \
-    XYZPlayer/FramelessWindow.cpp \
-    XYZPlayer/localmusicwidget.cpp
+    XYZPlayer/FramelessWindow.cpp
 
 HEADERS += \
+    XYZPlayer/LocalmusicWidget.h \
+    XYZPlayer/MusicLoader.h \
     XYZPlayer/MusicPlayer.h \
     XYZPlayer/MusicObject.h \
     XYZPlayer/PlaylistView.h \
@@ -59,13 +62,13 @@ HEADERS += \
     XYZPlayer/LyricsWidget.h \
     XYZPlayer/LyricsModel.h \
     XYZPlayer/LyricsView.h \
-    XYZPlayer/MusicPlaylist.h \
     XYZPlayer/MainContent.h \
     XYZPlayer/FramelessWindow.h \
-    XYZPlayer/localmusicwidget.h
+    XYZPlayer/SettingsDialog.h
 
 FORMS += \
-	XYZPlayer/MainWindow.ui
+	XYZPlayer/MainWindow.ui \
+	XYZPlayer/settingsdialog.ui
 
 RESOURCES += \
     res/res.qrc

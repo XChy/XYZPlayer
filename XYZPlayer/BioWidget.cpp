@@ -2,53 +2,53 @@
 
 BioWidget::BioWidget(QWidget *parent)
 	: QWidget(parent),
-	  mPlayer(nullptr),
-	  mPictureLabel(new QLabel(this))
+	  _player(nullptr),
+	  _pictureLabel(new QLabel(this))
 {
-	mPictureLabel->move(0,0);
-	mPictureLabel->setObjectName("PictureLabel");
-	mPictureLabel->setAlignment(Qt::AlignCenter);
+	_pictureLabel->move(0,0);
+	_pictureLabel->setObjectName("PictureLabel");
+	_pictureLabel->setAlignment(Qt::AlignCenter);
 }
 
 void BioWidget::resizeEvent(QResizeEvent* e)
 {
-	mPictureLabel->setFixedSize(size());
-	if(mPlayer)
+	_pictureLabel->setFixedSize(size());
+	if(_player)
 		updatePicture();
 }
 
 MusicPlayer* BioWidget::player() const
 {
-	return mPlayer;
+	return _player;
 }
 
 void BioWidget::setPlayer(MusicPlayer* player)
 {
 	if(player){
-		connect(player,&MusicPlayer::pictureLoaded,this,&BioWidget::onLoadedPicture);
+		connect(player,&MusicPlayer::pictureLoaded,this,&BioWidget::onLoadedPicture,Qt::QueuedConnection);
 		connect(player,&MusicPlayer::currentIndexChanged,this,&BioWidget::onCurrentIndexChanged);
 	}
-	if(mPlayer){
-		disconnect(mPlayer,&MusicPlayer::pictureLoaded,this,&BioWidget::onLoadedPicture);
-		disconnect(mPlayer,&MusicPlayer::currentIndexChanged,this,&BioWidget::onCurrentIndexChanged);
+	if(_player){
+		disconnect(_player,&MusicPlayer::pictureLoaded,this,&BioWidget::onLoadedPicture);
+		disconnect(_player,&MusicPlayer::currentIndexChanged,this,&BioWidget::onCurrentIndexChanged);
 	}
-	mPlayer = player;
+	_player = player;
 }
 
 void BioWidget::updatePicture()
 {
-	if(mPlayer->currentIndex()!=-1){
-        mPictureLabel->setPixmap(mPlayer->currentMusic().picture.scaled(mPictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
-		if(mPictureLabel->pixmap()->isNull())mPictureLabel->setText(tr("No image"));
+	if(_player->currentIndex()!=-1){
+		_pictureLabel->setPixmap(_player->currentMusic().picture.scaled(_pictureLabel->size(),Qt::KeepAspectRatio,Qt::SmoothTransformation));
+		if(_pictureLabel->pixmap()->isNull())_pictureLabel->setText(tr("No image"));
 	}else{
-		mPictureLabel->setPixmap(QPixmap());
-		mPictureLabel->setText(tr("No image"));
+		_pictureLabel->setPixmap(QPixmap());
+		_pictureLabel->setText(tr("No image"));
 	}
 }
 
 void BioWidget::onLoadedPicture(int index)
 {
-	if(index==mPlayer->currentIndex()){
+	if(index==_player->currentIndex()){
 		updatePicture();
 	}
 }
@@ -57,12 +57,12 @@ void BioWidget::onCurrentIndexChanged(int oldIndex,int newIndex)
 {
 	if(oldIndex==newIndex)return;
 	if(oldIndex!=-1){
-		mPlayer->unLoadPicture(oldIndex);
+		_player->unLoadPicture(oldIndex);
 	}
 	if(newIndex!=-1){
-		mPlayer->asyncLoadPicture(newIndex);
+		_player->asyncLoadPicture(newIndex);
 	}else{
-		mPictureLabel->setPixmap(QPixmap());
-		mPictureLabel->setText(tr("No image"));
+		_pictureLabel->setPixmap(QPixmap());
+		_pictureLabel->setText(tr("No image"));
 	}
 }

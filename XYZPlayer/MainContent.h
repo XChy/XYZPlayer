@@ -51,7 +51,7 @@ private slots:
 
 private:
 	Ui::MainWindow *ui;
-	MusicPlayer* mPlayer;
+	MusicPlayer* _player;
 	QSlider* mVolumeSlider;
 	QMenu* mVolumeMenu;
 

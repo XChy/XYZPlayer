@@ -19,8 +19,8 @@ protected:
 	void onLoadedPicture(int index);
 	void onCurrentIndexChanged(int oldIndex,int newIndex);
 private:
-	MusicPlayer* mPlayer;
-	QLabel* mPictureLabel;
+	MusicPlayer* _player;
+	QLabel* _pictureLabel;
 	void updatePicture();
 };
 

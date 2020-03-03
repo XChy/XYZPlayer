@@ -2,13 +2,9 @@
 #define MUSICPLAYER_H
 
 #include <QtAV/QtAV>
-#include <QThreadPool>
 #include <QList>
-#include <QtConcurrentMap>
-#include <QtConcurrentRun>
-#include <QFutureWatcher>
-#include <QRunnable>
 #include <QFileInfo>
+#include <XYZPlayer/MusicLoader.h>
 #include <XYZPlayer/MusicObject.h>
 #include <XYZPlayer/MusicUtil.h>
 
@@ -42,7 +38,10 @@ public:
 
 	void insertMusic(int index, const MusicObject& obj);
 
+	//删除过快时,异步资源加载会出现bug
 	void removeMusic(int index);
+	//含头不含尾
+	void removeMusics(int begin,int end);
 
     void clearAllMusic();
 
@@ -52,8 +51,6 @@ public:
 
 	void playback();
 	bool canPlayback() const;
-
-	const QFutureWatcher<int>& infoLoaderWatcher() const;
 
 public slots:
 	void loadInfo(int index);
@@ -66,6 +63,8 @@ public slots:
 	void unLoadLyrics(int index);
 
 	void asyncLoadInfo(int index);
+
+	//含头不含尾
 	void asyncLoadInfo(int begin,int end);
 	void asyncLoadAllInfo();
 
@@ -82,13 +81,10 @@ signals:
 private:
 	void onMediaStatusChanged(QtAV::MediaStatus state);
 private:
-	QList<MusicObject> mPlaylist;
-	QFutureWatcher<int> mInfoLoaderWatcher;
-	QFutureWatcher<int> mPictureLoaderWatcher;
-	int mInfoBeginLoadIndex;
-	int mPictureBeginLoadIndex;
-	int mCurrentIndex;
-	PlaybackMode mPlaybackMode;
+	QList<MusicObject> _playlist;
+	MusicLoader* _loader;
+	int _currentIndex;
+	PlaybackMode _playbackMode;
 };
 
 #endif // MUSICPLAYER_H
