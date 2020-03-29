@@ -89,3 +89,23 @@ void LyricItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& opt
 	textOption.setAlignment(Qt::AlignVCenter|Qt::AlignHCenter);
 	painter->drawText(option.rect,index.data().toString(),textOption);
 }
+
+ThumbItemDelegate::ThumbItemDelegate(QObject* parent)
+	:QItemDelegate(parent){}
+
+void ThumbItemDelegate::paint(QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+	Songlist* songlist=(Songlist*)(index.data().toUInt());
+	drawBackground(painter,option,index);
+	if(!songlist->isEmpty()){
+		painter->drawPixmap(option.rect.x(),option.rect.y(),80,80,songlist->first()->picture);
+	}else{
+		painter->drawPixmap(option.rect.x(),option.rect.y(),80,80,QPixmap(":/images/easy/add.png"));
+	}
+	painter->setRenderHint(QPainter::TextAntialiasing);
+	painter->setPen(Qt::black);
+	painter->setFont(QFont("微软雅黑"));
+	QTextOption textOption;
+	textOption.setAlignment(Qt::AlignVCenter|Qt::AlignBottom);
+	painter->drawText(QRect(option.rect.x(),option.rect.y(),90,90),songlist->name(),textOption);
+}

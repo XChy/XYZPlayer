@@ -322,9 +322,9 @@
           </size>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>0</number>
          </property>
-         <widget class="QWidget" name="musicsPage">
+         <widget class="LocalMusicWidget" name="musicsPage">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
@@ -703,6 +703,12 @@
    <class>LyricsWidget</class>
    <extends>QWidget</extends>
    <header>XYZPlayer/LyricsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LocalMusicWidget</class>
+   <extends>QWidget</extends>
+   <header>XYZPlayer/LocalMusicWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

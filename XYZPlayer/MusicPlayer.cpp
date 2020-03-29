@@ -92,6 +92,22 @@ void MusicPlayer::insertMusic(int index,const MusicObject& obj)
 	emit playlistElementsChanged();
 }
 
+void MusicPlayer::moveMusic(int from, int to)
+{
+	MusicObject& obj=currentMusic();
+	_playlist.move(from,to);
+	_currentIndex=_playlist.indexOf(obj);
+	emit playlistElementsChanged();
+}
+
+void MusicPlayer::moveMusics(int from, int len, int to)
+{
+	MusicObject& obj=currentMusic();
+	_playlist.move(from,to);
+	_currentIndex=_playlist.indexOf(obj);
+	emit playlistElementsChanged();
+}
+
 void MusicPlayer::removeMusic(int index)
 {
 	if(_currentIndex==index){
@@ -119,6 +135,7 @@ void MusicPlayer::removeMusics(int begin, int end)
 	if(_currentIndex>=begin&&_currentIndex<end){
 		if(_playlist.size()==size){
 			setCurrentIndex(-1);
+			_playlist.erase(_playlist.begin()+begin,_playlist.begin()+end);//erase也是含头不含尾
 			stop();
 		}else{
 			setCurrentIndex(-1);

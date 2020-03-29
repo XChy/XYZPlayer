@@ -17,11 +17,12 @@ public:
 
 	void contextMenuEvent(QContextMenuEvent *e);
 	void mouseDoubleClickEvent(QMouseEvent* e);
+	QMimeData* mimeData(const QModelIndexList &indexes) const;
 public slots:
 	void setModel(PlaylistModel* model);
 	PlaylistModel* model();
 private:
-	QMenu* _opupMenu;
+	QMenu* _popupMenu;
 };
 
 #endif // PLAYLISTVIEW_H

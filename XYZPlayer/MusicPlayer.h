@@ -38,6 +38,9 @@ public:
 
 	void insertMusic(int index, const MusicObject& obj);
 
+	void moveMusic(int from, int to);
+	void moveMusics(int from,int len, int to);
+
 	//删除过快时,异步资源加载会出现bug
 	void removeMusic(int index);
 	//含头不含尾

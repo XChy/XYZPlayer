@@ -21,6 +21,7 @@ public:
 	QWidget* content() const;
 	QWidget* titleBar() const;
 
+	~FramelessWindow();
 signals:
 	void windowStateChanged(Qt::WindowStates state);
 public slots:

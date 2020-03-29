@@ -33,6 +33,10 @@ SOURCES += \
     XYZPlayer/LocalmusicWidget.cpp \
     XYZPlayer/MusicLoader.cpp \
     XYZPlayer/SettingsDialog.cpp \
+    XYZPlayer/Songlist.cpp \
+    XYZPlayer/SonglistsModel.cpp \
+    XYZPlayer/SonglistsView.cpp \
+    XYZPlayer/addsonglistdialog.cpp \
 	XYZPlayer/main.cpp \
     XYZPlayer/MusicPlayer.cpp \
     XYZPlayer/MusicObject.cpp \
@@ -49,7 +53,7 @@ SOURCES += \
     XYZPlayer/FramelessWindow.cpp
 
 HEADERS += \
-    XYZPlayer/LocalmusicWidget.h \
+    XYZPlayer/LocalMusicWidget.h \
     XYZPlayer/MusicLoader.h \
     XYZPlayer/MusicPlayer.h \
     XYZPlayer/MusicObject.h \
@@ -64,11 +68,17 @@ HEADERS += \
     XYZPlayer/LyricsView.h \
     XYZPlayer/MainContent.h \
     XYZPlayer/FramelessWindow.h \
-    XYZPlayer/SettingsDialog.h
+    XYZPlayer/SettingsDialog.h \
+    XYZPlayer/Songlist.h \
+    XYZPlayer/SonglistsModel.h \
+    XYZPlayer/SonglistsView.h \
+    XYZPlayer/addsonglistdialog.h
 
 FORMS += \
+	XYZPlayer/LocalMusicWidget.ui \
 	XYZPlayer/MainWindow.ui \
-	XYZPlayer/settingsdialog.ui
+	XYZPlayer/SettingsDialog.ui \
+	XYZPlayer/addsonglistdialog.ui
 
 RESOURCES += \
     res/res.qrc

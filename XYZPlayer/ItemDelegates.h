@@ -5,45 +5,54 @@
 #include <QPainter>
 #include <QTime>
 #include <QImageReader>
+#include <XYZPlayer/Songlist.h>
 
 class PlayingItemDelegate : public QItemDelegate
 {
-	Q_OBJECT
-public:
-	PlayingItemDelegate(QObject* parent=nullptr);
-	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+		Q_OBJECT
+	public:
+		PlayingItemDelegate(QObject* parent=nullptr);
+		void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 class TitleItemDelegate : public QItemDelegate
 {
-	Q_OBJECT
-public:
-	TitleItemDelegate(QObject* parent=nullptr);
-	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+		Q_OBJECT
+	public:
+		TitleItemDelegate(QObject* parent=nullptr);
+		void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 class ArtistItemDelegate : public QItemDelegate
 {
-	Q_OBJECT
-public:
-	ArtistItemDelegate(QObject* parent=nullptr);
-	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+		Q_OBJECT
+	public:
+		ArtistItemDelegate(QObject* parent=nullptr);
+		void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 class DurationItemDelegate : public QItemDelegate
 {
-	Q_OBJECT
-public:
-	DurationItemDelegate(QObject* parent=nullptr);
-	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+		Q_OBJECT
+	public:
+		DurationItemDelegate(QObject* parent=nullptr);
+		void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 class LyricItemDelegate : public QItemDelegate
 {
-	Q_OBJECT
-public:
-	LyricItemDelegate(QObject* parent=nullptr);
-	void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+		Q_OBJECT
+	public:
+		LyricItemDelegate(QObject* parent=nullptr);
+		void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+};
+
+class ThumbItemDelegate : public QItemDelegate
+{
+		Q_OBJECT
+	public:
+		ThumbItemDelegate(QObject* parent=nullptr);
+		void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
 #endif // ITEMDELEGATES_H

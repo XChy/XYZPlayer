@@ -10,6 +10,7 @@ FramelessWindow::FramelessWindow(QWidget *parent)
 {
 	setWindowFlags(Qt::FramelessWindowHint);
 	setAttribute(Qt::WA_TranslucentBackground);
+	MusicUtil::loadMainWindowSetting(this);
 }
 
 void FramelessWindow::resizeEvent(QResizeEvent* e)
@@ -116,6 +117,11 @@ bool FramelessWindow::eventFilter(QObject* watched, QEvent* event)
 QWidget* FramelessWindow::titleBar() const
 {
 	return mTitleBar;
+}
+
+FramelessWindow::~FramelessWindow()
+{
+	MusicUtil::saveMainWindowSetting(this);
 }
 
 QWidget* FramelessWindow::content() const

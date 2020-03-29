@@ -25,17 +25,25 @@ QVariant PlaylistModel::data(const QModelIndex& index, int role) const
 			return QVariant();
 		}
 		switch(index.column()){
-			case 0:
-				return _player->currentIndex()==index.row();
-			case 1:
-				return _player->playlist()[index.row()].infoTags["title"];
-			case 2:
-				return _player->playlist()[index.row()].infoTags["artist"];
-			case 3:
-				return _player->playlist()[index.row()].duration;
+		case 0:
+			return _player->currentIndex()==index.row();
+		case 1:
+			return _player->playlist()[index.row()].infoTags["title"];
+		case 2:
+			return _player->playlist()[index.row()].infoTags["artist"];
+		case 3:
+			return _player->playlist()[index.row()].duration;
 		}
 	}
 	return QVariant();
+}
+
+bool PlaylistModel::moveRows(const QModelIndex& sourceParent, int sourceRow, int count, const QModelIndex& destinationParent, int destinationChild)
+{
+	if(destinationChild<rowCount()&&destinationChild>=0){
+		return true;
+	}
+	return false;
 }
 
 Qt::DropActions PlaylistModel::supportedDropActions() const
@@ -56,20 +64,29 @@ Qt::ItemFlags PlaylistModel::flags(const QModelIndex& index) const
 
 QStringList PlaylistModel::mimeTypes() const
 {
-	return {"text/url-list"};
+	return {"text/url-list","XYZPlayer/MusiclistAndIndexes"};
 }
-
+#include <QtDebug>
 QMimeData* PlaylistModel::mimeData(const QModelIndexList& indexes) const
 {
 	QMimeData* data=new QMimeData;
+	QByteArray array;
+	QDataStream stream(&array,QIODevice::WriteOnly);
+	stream<<int(&_player->playlist());
+	stream<<indexes.size()/columnCount();
+	for(int i=0;i<indexes.size()/columnCount();++i){
+		stream<<indexes[i*columnCount()].row();
+	}
+
+	data->setData("XYZPlayer/MusiclistAndIndexes",array);
 	return data;
 }
 
 bool PlaylistModel::canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const
 {
-	return data->hasUrls()||action==Qt::MoveAction;
+	return data->hasUrls()||data->hasFormat("XYZPlayer/MusiclistAndIndexes");
 }
-
+#include <QDebug>
 bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent){
 	if (action == Qt::IgnoreAction)
 		return true;
@@ -95,11 +112,50 @@ bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, i
 		_player->asyncLoadInfo(beginIndex,insertIndex);
 		_player->playAt(beginIndex);
 		return true;
-	}else if(action==Qt::MoveAction){
+	}else if(data->hasFormat("XYZPlayer/MusiclistAndIndexes")){
 
+		QByteArray array=data->data("XYZPlayer/MusiclistAndIndexes");
+		QDataStream stream(&array,QIODevice::ReadOnly);
+		QList<MusicObject>* list;
+		int _list;
+		int size;
+		stream>>_list;list=(QList<MusicObject>*)_list;
+		stream>>size;
+
+		int insertIndex;
+		if (row != -1)
+			insertIndex = row;
+		else if (parent.isValid())
+			insertIndex = parent.row();
+		else
+			insertIndex = rowCount()-1;
+
+		if(list == &_player->playlist()){
+			QList<int> indexes;
+			for(int i=0;i<size;++i){
+				int index;
+				stream>>index;
+				indexes<<index;
+			}
+			std::sort(indexes.begin(),indexes.end());
+			for(int i=0;i<size;++i){
+				_player->moveMusic(indexes[i],insertIndex);
+				if(indexes[i]>=insertIndex){
+					++insertIndex;
+				}
+			}
+		}else{
+			for(int i=0;i<size;++i){
+				int index;
+				stream>>index;
+				_player->insertMusic(insertIndex,list->at(index));
+			}
+		}
+
+		return true;
 	}
 
-	return false;
+	return QAbstractTableModel::dropMimeData(data,action,row,column,parent);
 }
 
 bool PlaylistModel::setData(const QModelIndex& index, const QVariant& v, int role)

@@ -101,7 +101,7 @@ int loadPicture(MusicObject& music)
     if (fmt_ctx->iformat->read_header(fmt_ctx) < 0) {
         printf("No header format");
         return -1;
-    }
+	}
 
     for (int i = 0; i < fmt_ctx->nb_streams; i++){
         if (fmt_ctx->streams[i]->disposition & AV_DISPOSITION_ATTACHED_PIC) {
@@ -125,7 +125,6 @@ void savePlayerSetting(MusicPlayer* player)
     setting.setValue("playback_mode",qint32(player->playbackMode()));
     setting.endGroup();
 }
-#include <QDebug>
 void loadPlayerSetting(MusicPlayer* player)
 {
     QSettings setting("../data/settings.ini",QSettings::IniFormat);

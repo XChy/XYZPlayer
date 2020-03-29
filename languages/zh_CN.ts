@@ -14,19 +14,38 @@
 <context>
     <name>LyricsView</name>
     <message>
-        <location filename="../XYZPlayer/LyricsView.cpp" line="7"/>
+        <location filename="../XYZPlayer/LyricsView.cpp" line="10"/>
         <source>Copy</source>
         <translation>复制</translation>
+    </message>
+    <message>
+        <location filename="../XYZPlayer/LyricsView.cpp" line="13"/>
+        <source>Turn to</source>
+        <translation>播放</translation>
     </message>
 </context>
 <context>
     <name>LyricsWidget</name>
     <message>
-        <location filename="../XYZPlayer/LyricsWidget.cpp" line="5"/>
         <source>No lyrics found
 You can &lt;a&gt;choose lyrics file&lt;/a&gt;</source>
-        <translation>未检测到歌词
+        <translation type="vanished">未检测到歌词
 你可以手动 &lt;a&gt;选取歌词文件&lt;/a</translation>
+    </message>
+    <message>
+        <location filename="../XYZPlayer/LyricsWidget.cpp" line="20"/>
+        <source>No lyrics found, Please click the button to choose lyrics</source>
+        <translation>未发现歌词,请点击按钮以加载歌词文件</translation>
+    </message>
+    <message>
+        <location filename="../XYZPlayer/LyricsWidget.cpp" line="22"/>
+        <source>Choose lyrics</source>
+        <translation>选择歌词</translation>
+    </message>
+    <message>
+        <location filename="../XYZPlayer/LyricsWidget.cpp" line="61"/>
+        <source>Set lyrics</source>
+        <translation>选择歌词</translation>
     </message>
 </context>
 <context>
@@ -149,24 +168,29 @@ You can &lt;a&gt;choose lyrics file&lt;/a&gt;</source>
     </message>
     <message>
         <location filename="../XYZPlayer/PlaylistView.cpp" line="17"/>
+        <source>Open in explorer</source>
+        <translation>在文件夹中打开</translation>
+    </message>
+    <message>
+        <location filename="../XYZPlayer/PlaylistView.cpp" line="23"/>
         <source>Copy title</source>
         <oldsource>copy title</oldsource>
         <translation>复制标题名</translation>
     </message>
     <message>
-        <location filename="../XYZPlayer/PlaylistView.cpp" line="22"/>
+        <location filename="../XYZPlayer/PlaylistView.cpp" line="28"/>
         <source>Copy artist</source>
         <oldsource>copy artist</oldsource>
         <translation>复制作者名</translation>
     </message>
     <message>
-        <location filename="../XYZPlayer/PlaylistView.cpp" line="27"/>
+        <location filename="../XYZPlayer/PlaylistView.cpp" line="33"/>
         <source>Copy album</source>
         <oldsource>copy album</oldsource>
         <translation>复制专辑名</translation>
     </message>
     <message>
-        <location filename="../XYZPlayer/PlaylistView.cpp" line="32"/>
+        <location filename="../XYZPlayer/PlaylistView.cpp" line="38"/>
         <source>Remove</source>
         <oldsource>remove</oldsource>
         <translation>移除</translation>
@@ -180,20 +204,33 @@ You can &lt;a&gt;choose lyrics file&lt;/a&gt;</source>
         <translation>播放列表</translation>
     </message>
     <message>
-        <location filename="../XYZPlayer/PlaylistWidget.cpp" line="53"/>
+        <location filename="../XYZPlayer/PlaylistWidget.cpp" line="54"/>
         <source>Add Musics</source>
         <translatorcomment>添加音乐</translatorcomment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../XYZPlayer/PlaylistWidget.cpp" line="57"/>
+        <location filename="../XYZPlayer/PlaylistWidget.cpp" line="58"/>
         <source>Music Files (*.mp3 *.ogg *.flac *.wav *.wma)</source>
         <translation>音乐文件 (*.mp3 *.ogg *.flac *.wav *.wma)</translation>
     </message>
     <message>
-        <location filename="../XYZPlayer/PlaylistWidget.cpp" line="58"/>
+        <location filename="../XYZPlayer/PlaylistWidget.cpp" line="59"/>
         <source>All Files (*)</source>
         <translation>全部文件 (*)</translation>
+    </message>
+</context>
+<context>
+    <name>SettingsDialog</name>
+    <message>
+        <location filename="../XYZPlayer/settingsdialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation>窗口</translation>
+    </message>
+    <message>
+        <location filename="../XYZPlayer/settingsdialog.ui" line="51"/>
+        <source>Basic Settting</source>
+        <translation>基础设置</translation>
     </message>
 </context>
 </TS>

@@ -2,7 +2,7 @@
 
 PlaylistView::PlaylistView(QWidget* parent)
 	:QTableView(parent)
-	,_opupMenu(new QMenu(this))
+	,_popupMenu(new QMenu(this))
 {
 	setDragDropMode(QAbstractItemView::DragDrop);
 	setDragEnabled(true);
@@ -11,33 +11,35 @@ PlaylistView::PlaylistView(QWidget* parent)
 	verticalHeader()->setVisible(false);
 	horizontalHeader()->setVisible(false);
 
-	_opupMenu->addAction(tr("Play"),[&](){
+	_popupMenu->addAction(tr("Play"),[&](){
 		model()->player()->playAt(selectionModel()->currentIndex().row());
 	});
-	_opupMenu->addAction(tr("Open in explorer"),[&](){
+	_popupMenu->addAction(tr("Open in explorer"),[&](){
 		QString path=model()->player()->playlist().at(selectionModel()->currentIndex().row()).path;
 		QDesktopServices::openUrl(QUrl("file:///"+
 									  path.left(path.lastIndexOf("/"))
 								  ));
 	});
-	_opupMenu->addAction(tr("Copy title"),[&](){
+	_popupMenu->addAction(tr("Copy title"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["title"]
 				);
     });
-	_opupMenu->addAction(tr("Copy artist"),[&](){
+	_popupMenu->addAction(tr("Copy artist"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["artist"]
 				);
 	});
-	_opupMenu->addAction(tr("Copy album"),[&](){
+	_popupMenu->addAction(tr("Copy album"),[&](){
 		QApplication::clipboard()->setText(
 					model()->player()->playlist()[selectionModel()->currentIndex().row()].infoTags["album"]
 				);
 	});
-	_opupMenu->addAction(tr("Remove"),[&](){
+	_popupMenu->addAction(tr("Remove"),[&](){
+		int offset=0;
 		for(QItemSelectionRange index:selectionModel()->selection()){
-			model()->player()->removeMusics(index.top(),index.bottom()+1);
+			model()->player()->removeMusics(index.top()-offset,index.bottom()+1-offset);
+			offset+=index.height();
 		}
 	});
 
@@ -53,11 +55,11 @@ void PlaylistView::contextMenuEvent(QContextMenuEvent* e)
 			if(!selectionModel()->isSelected(index)){
 				selectionModel()->setCurrentIndex(index,QItemSelectionModel::ClearAndSelect|QItemSelectionModel::Rows);
 			}
-			_opupMenu->exec(e->globalPos());
+			_popupMenu->exec(e->globalPos());
 			e->accept();
 		}else{
 			selectionModel()->setCurrentIndex(indexAt(pos),QItemSelectionModel::Select|QItemSelectionModel::Rows);
-			_opupMenu->exec(e->globalPos());
+			_popupMenu->exec(e->globalPos());
 			e->accept();
 		}
 	}
@@ -69,6 +71,13 @@ void PlaylistView::mouseDoubleClickEvent(QMouseEvent* e)
 	if(index.isValid()&&e->button()==Qt::LeftButton){
 		model()->player()->playAt(index.row());
 	}
+}
+
+QMimeData* PlaylistView::mimeData(const QModelIndexList& indexes) const
+{
+	QMimeData* data=new QMimeData;
+	QByteArray bytes;
+	return data;
 }
 
 void PlaylistView::setModel(PlaylistModel* model)
