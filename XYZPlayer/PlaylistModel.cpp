@@ -66,7 +66,7 @@ QStringList PlaylistModel::mimeTypes() const
 {
 	return {"text/url-list","XYZPlayer/MusiclistAndIndexes"};
 }
-#include <QtDebug>
+
 QMimeData* PlaylistModel::mimeData(const QModelIndexList& indexes) const
 {
 	QMimeData* data=new QMimeData;

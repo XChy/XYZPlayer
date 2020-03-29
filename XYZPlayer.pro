@@ -30,13 +30,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    XYZPlayer/AddSonglistDialog.cpp \
     XYZPlayer/LocalmusicWidget.cpp \
     XYZPlayer/MusicLoader.cpp \
     XYZPlayer/SettingsDialog.cpp \
     XYZPlayer/Songlist.cpp \
     XYZPlayer/SonglistsModel.cpp \
     XYZPlayer/SonglistsView.cpp \
-    XYZPlayer/addsonglistdialog.cpp \
 	XYZPlayer/main.cpp \
     XYZPlayer/MusicPlayer.cpp \
     XYZPlayer/MusicObject.cpp \
@@ -53,6 +53,7 @@ SOURCES += \
     XYZPlayer/FramelessWindow.cpp
 
 HEADERS += \
+    XYZPlayer/AddSonglistDialog.h \
     XYZPlayer/LocalMusicWidget.h \
     XYZPlayer/MusicLoader.h \
     XYZPlayer/MusicPlayer.h \
@@ -71,8 +72,7 @@ HEADERS += \
     XYZPlayer/SettingsDialog.h \
     XYZPlayer/Songlist.h \
     XYZPlayer/SonglistsModel.h \
-    XYZPlayer/SonglistsView.h \
-    XYZPlayer/addsonglistdialog.h
+    XYZPlayer/SonglistsView.h
 
 FORMS += \
 	XYZPlayer/LocalMusicWidget.ui \

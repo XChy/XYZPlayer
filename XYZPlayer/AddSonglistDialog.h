@@ -13,6 +13,7 @@ class AddSonglistDialog : public QDialog
 
 	public:
 		explicit AddSonglistDialog(QWidget *parent = nullptr);
+		QString setSonglistName(const QString& name);
 		QString songlistName();
 		~AddSonglistDialog();
 

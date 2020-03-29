@@ -5,11 +5,12 @@
 extern "C"{
 #include <libavformat/avformat.h>
 }
-#include <XYZPlayer/MusicObject.h>
 #include <QSettings>
 #include <QDataStream>
 #include <QFile>
 #include <QStandardPaths>
+#include <XYZPlayer/MusicObject.h>
+#include <XYZPlayer/Songlist.h>
 
 class MusicPlayer;
 class MainContent;
@@ -29,6 +30,9 @@ void loadMainWindowSetting(QWidget* window);
 
 void savePlaylist(MusicPlayer* player );
 void loadPlaylist(MusicPlayer* player);
+
+void saveSonglists(Songlists* songlist);
+void loadSonglists(Songlists* songlist);
 
 LyricsError loadLyrics(MusicObject& music);
 int loadInfo(MusicObject& music);

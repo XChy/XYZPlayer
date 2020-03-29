@@ -18,6 +18,7 @@
         <file>images/easy/clear.png</file>
         <file>images/easy/normalize.png</file>
         <file>images/easy/maximize.png</file>
-        <file>qss/light.qss</file>
+        <file>qss/easy.qss</file>
+        <file>images/easy/folder.png</file>
     </qresource>
 </RCC>

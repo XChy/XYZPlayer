@@ -12,15 +12,19 @@ int SonglistsModel::rowCount(const QModelIndex& parent) const
 
 QVariant SonglistsModel::data(const QModelIndex& index, int role) const
 {
-	if(role==Qt::DisplayRole){
-		if(!index.isValid()){
-			return QVariant();
-		}
-		const Songlist& songlist = _songlists->at(index.row());
-		if(songlist.size()==0){
-			return uint(&songlist);
+
+	if(!index.isValid()){
+		return QVariant();
+	}
+
+	const Songlist& songlist = _songlists->at(index.row());
+	if(role==Qt::DisplayRole)
+		return songlist.name();
+	else if(role==Qt::DecorationRole){
+		if(songlist.isEmpty()||songlist.first().picture.isNull()){
+			return QIcon(QPixmap(":/images/easy/folder.png"));
 		}else{
-			return uint(&songlist);
+			return QIcon(songlist.first().picture);
 		}
 	}
 	return QVariant();
@@ -55,7 +59,7 @@ QMimeData* SonglistsModel::mimeData(const QModelIndexList& indexes) const
 
 bool SonglistsModel::canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const
 {
-	return data->hasUrls()||data->hasFormat("XYZPlayer/MusiclistAndIndexes");
+	return data->hasUrls()||data->hasFormat("XYZPlayer/MusiclistAndIndexes")||data->hasFormat("XYZPlayer/Songlist");
 }
 
 bool SonglistsModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)

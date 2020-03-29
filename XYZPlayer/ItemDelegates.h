@@ -47,12 +47,4 @@ class LyricItemDelegate : public QItemDelegate
 		void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 };
 
-class ThumbItemDelegate : public QItemDelegate
-{
-		Q_OBJECT
-	public:
-		ThumbItemDelegate(QObject* parent=nullptr);
-		void paint(QPainter* painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-};
-
 #endif // ITEMDELEGATES_H

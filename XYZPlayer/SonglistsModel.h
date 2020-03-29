@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 #include <QMimeData>
+#include <QIcon>
 #include <XYZPlayer/Songlist.h>
 #include <XYZPlayer/MusicLoader.h>
 

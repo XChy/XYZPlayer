@@ -1,4 +1,4 @@
-#include "addsonglistdialog.h"
+#include "AddSonglistDialog.h"
 #include "ui_addsonglistdialog.h"
 
 AddSonglistDialog::AddSonglistDialog(QWidget *parent) :
@@ -6,6 +6,11 @@ AddSonglistDialog::AddSonglistDialog(QWidget *parent) :
 	ui(new Ui::AddSonglistDialog)
 {
 	ui->setupUi(this);
+}
+
+QString AddSonglistDialog::setSonglistName(const QString& name)
+{
+	ui->nameEdit->setText(name);
 }
 
 QString AddSonglistDialog::songlistName()

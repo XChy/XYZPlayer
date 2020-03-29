@@ -43,15 +43,15 @@ void PlaylistWidget::setPlayer(MusicPlayer* player)
 	_view->setColumnWidth(0,30);
 	_view->setColumnWidth(3,40);
 	_view->horizontalHeader()->setSectionResizeMode(0,QHeaderView::Fixed);
-	_view->horizontalHeader()->setSectionResizeMode(1,QHeaderView::Stretch);
-	_view->horizontalHeader()->setSectionResizeMode(2,QHeaderView::ResizeToContents);
+	_view->horizontalHeader()->setSectionResizeMode(1,QHeaderView::ResizeToContents);
+	_view->horizontalHeader()->setSectionResizeMode(2,QHeaderView::Stretch);
 	_view->horizontalHeader()->setSectionResizeMode(3,QHeaderView::Fixed);
 }
 
 void PlaylistWidget::on_clicked_addButton()
 {
     QSettings setting("../data/settings.ini",QSettings::IniFormat);
-    QFileDialog dialog(this,tr("Add Musics"),setting.value("PlaylistFileDialog/open_dir",QString()).toString());
+	QFileDialog dialog(this,tr("Add Musics"),setting.value("MusicFile/open_dir",QString()).toString());
 	dialog.setAcceptMode(QFileDialog::AcceptOpen);
 	dialog.setFileMode(QFileDialog::ExistingFiles);
     dialog.setNameFilters({
@@ -65,7 +65,7 @@ void PlaylistWidget::on_clicked_addButton()
 		if(fileNames.isEmpty()){
 			return;
 		}else{
-			setting.beginGroup("PlaylistFileDialog");
+			setting.beginGroup("MusicFile");
 			setting.setValue("open_dir",dialog.directory().path());
 			setting.endGroup( );
 		}

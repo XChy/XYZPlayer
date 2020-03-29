@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 	translator.load("../languages/zh_CN");
 	a.installTranslator(&translator);
 
-	QFile style("://qss/light.qss");
+	QFile style("://qss/easy.qss");
 
 	if(style.open(QFile::ReadOnly)){
 		a.setStyleSheet(style.readAll());

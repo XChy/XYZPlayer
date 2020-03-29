@@ -76,7 +76,6 @@ void PlaylistView::mouseDoubleClickEvent(QMouseEvent* e)
 QMimeData* PlaylistView::mimeData(const QModelIndexList& indexes) const
 {
 	QMimeData* data=new QMimeData;
-	QByteArray bytes;
 	return data;
 }
 

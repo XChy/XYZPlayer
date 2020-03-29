@@ -7,15 +7,14 @@ LocalMusicWidget::LocalMusicWidget(QWidget *parent)
 	  _model(new SonglistsModel(this))
 {
 	ui->setupUi(this);
-
+	MusicUtil::loadSonglists(&_local);
 	_model->setSonglists(&_local);
 	ui->view->setModel(_model);
-
-	ui->view->setItemDelegate(new ThumbItemDelegate(this));
 }
 
 LocalMusicWidget::~LocalMusicWidget()
 {
+	MusicUtil::saveSonglists(&_local);
 	delete ui;
 }
 
@@ -24,6 +23,10 @@ void LocalMusicWidget::on_addButton_clicked()
 	AddSonglistDialog dialog;
 	if(dialog.exec()){
 		QString name=dialog.songlistName();
+		if(name.isEmpty()){
+			QMessageBox::warning(this,tr("Empty name!"),tr("Empty name is illegal"));
+			return;
+		}
 		for(Songlist& list:_local){
 			if(list.name()==name){
 				QMessageBox::warning(this,tr("Duplication of name!"),tr("This name of songlist is duplicated"));
