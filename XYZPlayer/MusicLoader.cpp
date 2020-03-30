@@ -47,6 +47,11 @@ MusicLoader::MusicLoader(QObject *parent) : QObject(parent)
 
 void MusicLoader::asyncLoadInfo(MusicObject* obj)
 {
+	if(_loaders.contains(obj)){
+		if(dynamic_cast<InfoLoader*>(_loaders[obj])){
+			return;
+		}
+	}
 	QRunnable* loader=new InfoLoader(obj,this);
 	_loaders[obj]=loader;
 	QThreadPool::globalInstance()->start(loader);
@@ -54,6 +59,11 @@ void MusicLoader::asyncLoadInfo(MusicObject* obj)
 
 void MusicLoader::asyncLoadPicture(MusicObject* obj)
 {
+	if(_loaders.contains(obj)){
+		if(dynamic_cast<PictureLoader*>(_loaders[obj])){
+			return;
+		}
+	}
 	QRunnable* loader=new PictureLoader(obj,this);
 	_loaders[obj]=loader;
 	QThreadPool::globalInstance()->start(loader);
@@ -61,6 +71,11 @@ void MusicLoader::asyncLoadPicture(MusicObject* obj)
 
 void MusicLoader::asyncLoadLyrics(MusicObject* obj)
 {
+	if(_loaders.contains(obj)){
+		if(dynamic_cast<LyricsLoader*>(_loaders[obj])){
+			return;
+		}
+	}
 	QRunnable* loader=new LyricsLoader(obj,this);
 	_loaders[obj]=loader;
 	QThreadPool::globalInstance()->start(loader);

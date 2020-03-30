@@ -5,7 +5,7 @@
 #include <QMessageBox>
 #include <XYZPlayer/SonglistsModel.h>
 #include <XYZPlayer/SonglistsView.h>
-#include <XYZPlayer/AddSonglistDialog.h>
+#include <XYZPlayer/addsonglistdialog.h>
 #include <XYZPlayer/ItemDelegates.h>
 
 namespace Ui {

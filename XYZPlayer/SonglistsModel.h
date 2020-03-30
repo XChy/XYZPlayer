@@ -14,7 +14,11 @@ class SonglistsModel : public QAbstractListModel
 		SonglistsModel(QObject* parent=nullptr);
 
 		virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+		virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 		virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+
+		bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
+								  const QModelIndex &destinationParent, int destinationChild);
 
 		virtual Qt::DropActions supportedDropActions() const;
 		virtual Qt::DropActions supportedDragActions() const;

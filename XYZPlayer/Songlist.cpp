@@ -20,3 +20,8 @@ void Songlist::setName(const QString& name)
 {
 	_name = name;
 }
+
+bool Songlist::operator==(const Songlist& other)
+{
+	return name()==other.name();
+}

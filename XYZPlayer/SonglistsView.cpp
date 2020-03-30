@@ -4,12 +4,8 @@ SonglistsView::SonglistsView(QWidget *parent) :
 	QListView(parent),
 	_popupMenu(new QMenu(this))
 {
-	setViewMode(IconMode);
+	setViewMode(ListMode);
 	setIconSize(QSize(90,90));
-	setGridSize(QSize(110,110));
-	setUniformItemSizes(true);
-
-	setResizeMode(Adjust);
 
 	setDragDropMode(QAbstractItemView::DragDrop);
 	setDragEnabled(true);
@@ -73,6 +69,16 @@ void SonglistsView::mouseDoubleClickEvent(QMouseEvent* e)
 	if(index.isValid()){
 		emit aboutToOpenSonglist(&(model()->songlists()->operator[](index.row())));
 	}
+}
+
+void SonglistsView::dragEnterEvent(QDragEnterEvent* event)
+{
+	QListView::dragEnterEvent(event);
+}
+
+void SonglistsView::dragMoveEvent(QDragMoveEvent* e)
+{
+	QListView::dragMoveEvent(e);
 }
 
 QMimeData* SonglistsView::mimeData(const QModelIndexList& indexes) const

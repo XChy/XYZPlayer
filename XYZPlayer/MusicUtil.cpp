@@ -172,6 +172,7 @@ void loadPlaylist(MusicPlayer* player)
 			stream>>player->playlist();
 		}
 	}
+	player->asyncLoadAllInfo();//WARNING If load after setting of currentIndex,the current music cannot be load;
 }
 
 void saveSonglists(Songlists* songlist)

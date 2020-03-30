@@ -66,12 +66,6 @@ int main(int argc, char *argv[])
 
 	wrapper.setContent(w);
 	wrapper.setTitleBar(w->titleBar());
-
-
-
-
 	wrapper.show();
-
-	w->player()->asyncLoadAllInfo();
 	return a.exec();
 }

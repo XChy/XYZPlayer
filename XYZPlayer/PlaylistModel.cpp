@@ -72,7 +72,7 @@ QMimeData* PlaylistModel::mimeData(const QModelIndexList& indexes) const
 	QMimeData* data=new QMimeData;
 	QByteArray array;
 	QDataStream stream(&array,QIODevice::WriteOnly);
-	stream<<int(&_player->playlist());
+	stream<<(qulonglong)&_player->playlist();
 	stream<<indexes.size()/columnCount();
 	for(int i=0;i<indexes.size()/columnCount();++i){
 		stream<<indexes[i*columnCount()].row();
@@ -112,14 +112,14 @@ bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, i
 		_player->asyncLoadInfo(beginIndex,insertIndex);
 		_player->playAt(beginIndex);
 		return true;
-	}else if(data->hasFormat("XYZPlayer/MusiclistAndIndexes")){
+	}
+	if(data->hasFormat("XYZPlayer/MusiclistAndIndexes")){
 
 		QByteArray array=data->data("XYZPlayer/MusiclistAndIndexes");
 		QDataStream stream(&array,QIODevice::ReadOnly);
 		QList<MusicObject>* list;
-		int _list;
 		int size;
-		stream>>_list;list=(QList<MusicObject>*)_list;
+		stream>>(qulonglong&)list;
 		stream>>size;
 
 		int insertIndex;

@@ -15,6 +15,8 @@ class Songlist:public QList<MusicObject>{
 		QString name() const;
 		void setName(const QString& name);
 
+		bool operator==(const Songlist& other);
+
 		friend QDataStream& operator>>(QDataStream& in, Songlist& data){
 			in>>data._name;
 			in>>data._timeCreated;
