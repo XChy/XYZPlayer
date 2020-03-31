@@ -197,6 +197,11 @@ void loadSonglists(Songlists* songlist)
 			stream>>*songlist;
 		}
 	}
+	for(auto it=songlist->begin();it!=songlist->end();++it){
+		for(auto i=it->begin();i!=it->end();++i){
+			loadInfo(*i);
+		}
+	}
 }
 
 
