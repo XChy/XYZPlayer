@@ -124,6 +124,7 @@ bool SonglistsModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 			int index;
 			stream>>index;
 			_songlists->operator[](insertIndex).insert(0,list->at(index));
+			MusicUtil::loadPicture(_songlists->operator[](insertIndex).operator[](0));
 		}
 		refresh();
 		return true;

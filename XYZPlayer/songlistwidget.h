@@ -7,13 +7,13 @@ namespace Ui {
 class SonglistWIdget;
 }
 
-class SonglistWIdget : public QWidget
+class SonglistWidget : public QWidget
 {
 		Q_OBJECT
 
 	public:
-		explicit SonglistWIdget(QWidget *parent = nullptr);
-		~SonglistWIdget();
+		explicit SonglistWidget(QWidget *parent = nullptr);
+		~SonglistWidget();
 
 	private:
 		Ui::SonglistWIdget *ui;

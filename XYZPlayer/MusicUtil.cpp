@@ -198,6 +198,9 @@ void loadSonglists(Songlists* songlist)
 		}
 	}
 	for(auto it=songlist->begin();it!=songlist->end();++it){
+		if(!it->isEmpty()){
+			loadPicture(it->first());
+		}
 		for(auto i=it->begin();i!=it->end();++i){
 			loadInfo(*i);
 		}

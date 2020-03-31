@@ -1,14 +1,14 @@
 #include "songlistwidget.h"
 #include "ui_songlistwidget.h"
 
-SonglistWIdget::SonglistWIdget(QWidget *parent) :
+SonglistWidget::SonglistWidget(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::SonglistWIdget)
 {
 	ui->setupUi(this);
 }
 
-SonglistWIdget::~SonglistWIdget()
+SonglistWidget::~SonglistWidget()
 {
 	delete ui;
 }
