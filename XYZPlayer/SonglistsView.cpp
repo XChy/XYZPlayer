@@ -13,6 +13,8 @@ SonglistsView::SonglistsView(QWidget *parent) :
 
 	_popupMenu->addAction(tr("Edit"),[this](){
 		QModelIndex index=currentIndex();
+		qDebug()<<"About to edit songlist:"<<index.data().toString();
+
 		AddSonglistDialog dialog;
 		dialog.setSonglistName(index.data().toString());
 		if(dialog.exec()){
@@ -30,14 +32,21 @@ SonglistsView::SonglistsView(QWidget *parent) :
 					return;
 				}
 			}
+
+			qDebug()<<"Edited songlist:"<<index.data().toString();
 			model()->songlists()->operator[](index.row()).setName(name);
 		}
+
 		model()->refresh();
 	});
 	_popupMenu->addAction(tr("Remove"),[this](){
 		QModelIndex index=currentIndex();
+		qDebug()<<"About to remove songlist:"<<index.data().toString()<<",index:"<<index;
+
 		if(QMessageBox::question(this,tr("Remove"),tr("Do you really want to remove this songlist?"))==QMessageBox::Yes){
 			model()->songlists()->removeAt(index.row());
+			qDebug()<<"Removed songlist";
+
 			model()->refresh();
 		}
 	});
@@ -48,17 +57,9 @@ void SonglistsView::contextMenuEvent(QContextMenuEvent* e)
 	QPoint pos=e->pos();
 	QModelIndex index=indexAt(pos);
 	if(index.isValid()){
-		if(selectionModel()->hasSelection()){
-			if(!selectionModel()->isSelected(index)){
-				selectionModel()->setCurrentIndex(index,QItemSelectionModel::ClearAndSelect);
-			}
-			_popupMenu->exec(e->globalPos());
-			e->accept();
-		}else{
-			selectionModel()->setCurrentIndex(indexAt(pos),QItemSelectionModel::Select);
-			_popupMenu->exec(e->globalPos());
-			e->accept();
-		}
+		selectionModel()->setCurrentIndex(indexAt(pos),QItemSelectionModel::Select);
+		_popupMenu->exec(e->globalPos());
+		e->accept();
 	}
 }
 
@@ -69,16 +70,6 @@ void SonglistsView::mouseDoubleClickEvent(QMouseEvent* e)
 	if(index.isValid()){
 		emit aboutToOpenSonglist(&(model()->songlists()->operator[](index.row())));
 	}
-}
-
-void SonglistsView::dragEnterEvent(QDragEnterEvent* event)
-{
-	QListView::dragEnterEvent(event);
-}
-
-void SonglistsView::dragMoveEvent(QDragMoveEvent* e)
-{
-	QListView::dragMoveEvent(e);
 }
 
 QMimeData* SonglistsView::mimeData(const QModelIndexList& indexes) const

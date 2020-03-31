@@ -4,6 +4,7 @@
 #include <QListView>
 #include <QMenu>
 #include <QMessageBox>
+#include <QDebug>
 #include <XYZPlayer/SonglistsModel.h>
 #include <XYZPlayer/AddSonglistDialog.h>
 
@@ -16,8 +17,6 @@ class SonglistsView : public QListView
 
 		void contextMenuEvent(QContextMenuEvent *e);
 		void mouseDoubleClickEvent(QMouseEvent* e);
-		void dragEnterEvent(QDragEnterEvent *event);
-		void dragMoveEvent(QDragMoveEvent *e);
 		QMimeData* mimeData(const QModelIndexList &indexes) const;
 	signals:
 		void aboutToOpenSonglist(Songlist* songlist);

@@ -55,7 +55,7 @@ void PlaylistWidget::on_clicked_addButton()
 	dialog.setAcceptMode(QFileDialog::AcceptOpen);
 	dialog.setFileMode(QFileDialog::ExistingFiles);
     dialog.setNameFilters({
-                              tr("Music Files (*.mp3 *.ogg *.flac *.wav *.wma)"),
+							  tr("Music Files (*.mp3 *.ogg *.flac *.wav *.wma *.m4a)"),
                               tr("All Files (*)")
                           });
 	if(dialog.exec())

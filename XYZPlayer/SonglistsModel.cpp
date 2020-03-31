@@ -85,12 +85,13 @@ QMimeData* SonglistsModel::mimeData(const QModelIndexList& indexes) const
 bool SonglistsModel::canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const
 {
 	return data->hasUrls()
-			||(data->hasFormat("XYZPlayer/MusiclistAndIndexes")&&row!=-1)
+			||data->hasFormat("XYZPlayer/MusiclistAndIndexes")
 			||data->hasFormat("XYZPlayer/Songlist");
 }
 
 bool SonglistsModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
 {
+	qDebug()<<"Drop in Songlists"<<row<<", Parent"<<parent;
 	if (action == Qt::IgnoreAction)
 		return true;
 
@@ -102,13 +103,17 @@ bool SonglistsModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 	else
 		insertIndex = rowCount()-1;
 
+	qDebug()<<"Insert in Songlists"<<insertIndex;
+
 	if(data->hasFormat("XYZPlayer/Songlist")){
+		qDebug()<<"Drop songlist in songlists";
 		Songlist* songlist=(Songlist*)data->data("XYZPlayer/Songlist").toULongLong();
 		_songlists->move(_songlists->indexOf(*songlist),insertIndex);
 		return true;
 	}
 	//BUG only receive row=0
 	if(data->hasFormat("XYZPlayer/MusiclistAndIndexes")){
+		qDebug()<<"Drop indexes in songlists";
 		QByteArray _data=data->data("XYZPlayer/MusiclistAndIndexes");
 		QDataStream stream(&_data,QIODevice::ReadOnly);
 		QList<MusicObject>* list;
@@ -118,8 +123,9 @@ bool SonglistsModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 		for(int i=0;i<size;++i){
 			int index;
 			stream>>index;
-			_songlists->operator[](row).insert(insertIndex,list->at(index));
+			_songlists->operator[](insertIndex).insert(0,list->at(index));
 		}
+		refresh();
 		return true;
 	}
 	return QAbstractListModel::dropMimeData(data,action,row,column,parent);

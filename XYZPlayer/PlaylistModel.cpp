@@ -86,8 +86,9 @@ bool PlaylistModel::canDropMimeData(const QMimeData* data, Qt::DropAction action
 {
 	return data->hasUrls()||data->hasFormat("XYZPlayer/MusiclistAndIndexes");
 }
-#include <QDebug>
+
 bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent){
+	qDebug()<<"Drop in playlist:"<<row<<", Parent"<<parent;
 	if (action == Qt::IgnoreAction)
 		return true;
 	if (data->hasUrls()){
@@ -114,7 +115,6 @@ bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, i
 		return true;
 	}
 	if(data->hasFormat("XYZPlayer/MusiclistAndIndexes")){
-
 		QByteArray array=data->data("XYZPlayer/MusiclistAndIndexes");
 		QDataStream stream(&array,QIODevice::ReadOnly);
 		QList<MusicObject>* list;
@@ -129,6 +129,8 @@ bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, i
 			insertIndex = parent.row();
 		else
 			insertIndex = rowCount()-1;
+
+		qDebug()<<"Insert in playlist:"<<insertIndex;
 
 		if(list == &_player->playlist()){
 			QList<int> indexes;

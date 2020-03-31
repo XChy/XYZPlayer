@@ -4,6 +4,7 @@
 #include <QAbstractListModel>
 #include <QMimeData>
 #include <QIcon>
+#include <QDebug>
 #include <XYZPlayer/Songlist.h>
 #include <XYZPlayer/MusicLoader.h>
 
