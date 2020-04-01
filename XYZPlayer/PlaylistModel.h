@@ -12,30 +12,25 @@ class PlaylistModel : public QAbstractTableModel
 public:
 	PlaylistModel(QObject* parent=nullptr);
 
-	virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
-	virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
-	virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+	virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+	virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+	virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-	bool moveRows(const QModelIndex &sourceParent, int sourceRow, int count,
-							  const QModelIndex &destinationParent, int destinationChild);
+	virtual Qt::DropActions supportedDropActions() const override;
+	virtual Qt::DropActions supportedDragActions() const override;
 
-	virtual Qt::DropActions supportedDropActions() const;
-	virtual Qt::DropActions supportedDragActions() const;
+	virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-	virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+	virtual QStringList mimeTypes() const override;
 
-	virtual QStringList mimeTypes() const;
-
-	virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
+	virtual QMimeData* mimeData(const QModelIndexList &indexes) const override;
 
 	virtual bool canDropMimeData(const QMimeData *data, Qt::DropAction action,
-								 int row, int column, const QModelIndex &parent) const;
-	virtual bool dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent);
+								 int row, int column, const QModelIndex &parent) const override;
+	virtual bool dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
 
 	MusicPlayer* player() const;
 	void setPlayer(MusicPlayer* player);
-
-	virtual bool setData(const QModelIndex& index, const QVariant& v, int role = Qt::EditRole);
 public slots:
 	void onCurrentIndexChanged(int oldIndex,int newIndex);
 	void onInfoLoaded(int index);

@@ -1,21 +1,21 @@
-#ifndef SONGLISTSMODEL_H
-#define SONGLISTSMODEL_H
+#ifndef SONGLISTMODEL_H
+#define SONGLISTMODEL_H
 
-#include <QAbstractListModel>
+#include <QAbstractTableModel>
 #include <QMimeData>
-#include <QIcon>
-#include <QDebug>
 #include <XYZPlayer/Songlist.h>
-#include <XYZPlayer/MusicLoader.h>
 
-class SonglistsModel : public QAbstractListModel
+class SonglistModel : public QAbstractTableModel
 {
 		Q_OBJECT
-	public:
-		SonglistsModel(QObject* parent=nullptr);
 
-		virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-		virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+	public:
+		explicit SonglistModel(QObject *parent = nullptr);
+
+		int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+		int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+
+		QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 		virtual Qt::DropActions supportedDropActions() const override;
 		virtual Qt::DropActions supportedDragActions() const override;
@@ -31,14 +31,8 @@ class SonglistsModel : public QAbstractListModel
 		virtual bool dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
 
 		void refresh();
-
-		Songlists* songlists() const;
-		void setSonglists(Songlists* songlists);
-	public slots:
-//		void onPictureLoaded(int index);
 	private:
-		Songlists* _songlists;
-
+		Songlist* _songlist;
 };
 
-#endif // SONGLISTSMODEL_H
+#endif // SONGLISTMODEL_H

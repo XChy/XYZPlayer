@@ -7,17 +7,14 @@ SonglistsModel::SonglistsModel(QObject *parent)
 
 int SonglistsModel::rowCount(const QModelIndex& parent) const
 {
-	return _songlists->size();
-}
+	if(parent.isValid())
+		return 0;
 
-int SonglistsModel::columnCount(const QModelIndex& parent) const
-{
-	return 1;
+	return _songlists->size();
 }
 
 QVariant SonglistsModel::data(const QModelIndex& index, int role) const
 {
-
 	if(!index.isValid()){
 		return QVariant();
 	}
@@ -33,14 +30,6 @@ QVariant SonglistsModel::data(const QModelIndex& index, int role) const
 		}
 	}
 	return QVariant();
-}
-
-bool SonglistsModel::moveRows(const QModelIndex& sourceParent, int sourceRow, int count, const QModelIndex& destinationParent, int destinationChild)
-{
-	if(destinationChild<rowCount()&&destinationChild>=0){
-		return true;
-	}
-	return false;
 }
 
 Qt::DropActions SonglistsModel::supportedDropActions() const
@@ -119,7 +108,7 @@ bool SonglistsModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 		QList<MusicObject>* list;
 		int size;
 		stream>>(qulonglong&)list;
-		stream>>size;
+		stream>>size;//TODO sort order
 		for(int i=0;i<size;++i){
 			int index;
 			stream>>index;
@@ -130,11 +119,6 @@ bool SonglistsModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 		return true;
 	}
 	return QAbstractListModel::dropMimeData(data,action,row,column,parent);
-}
-
-bool SonglistsModel::setData(const QModelIndex& index, const QVariant& v, int role)
-{
-	return QAbstractListModel::setData(index,v,role);
 }
 
 void SonglistsModel::refresh()

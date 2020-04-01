@@ -35,6 +35,8 @@ SOURCES += \
     XYZPlayer/MusicLoader.cpp \
     XYZPlayer/SettingsDialog.cpp \
     XYZPlayer/Songlist.cpp \
+    XYZPlayer/SonglistModel.cpp \
+    XYZPlayer/SonglistView.cpp \
     XYZPlayer/SonglistsModel.cpp \
     XYZPlayer/SonglistsView.cpp \
 	XYZPlayer/main.cpp \
@@ -72,6 +74,8 @@ HEADERS += \
     XYZPlayer/FramelessWindow.h \
     XYZPlayer/SettingsDialog.h \
     XYZPlayer/Songlist.h \
+    XYZPlayer/SonglistModel.h \
+    XYZPlayer/SonglistView.h \
     XYZPlayer/SonglistsModel.h \
     XYZPlayer/SonglistsView.h \
     XYZPlayer/songlistwidget.h

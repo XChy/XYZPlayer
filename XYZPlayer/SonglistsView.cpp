@@ -72,13 +72,6 @@ void SonglistsView::mouseDoubleClickEvent(QMouseEvent* e)
 	}
 }
 
-QMimeData* SonglistsView::mimeData(const QModelIndexList& indexes) const
-{
-	QMimeData* data=new QMimeData;
-	QByteArray bytes;
-	return data;
-}
-
 void SonglistsView::setModel(SonglistsModel* model)
 {
 	QListView::setModel(model);

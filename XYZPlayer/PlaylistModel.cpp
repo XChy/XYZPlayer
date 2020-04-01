@@ -10,11 +10,17 @@ PlaylistModel::PlaylistModel(QObject* parent)
 
 int PlaylistModel::rowCount(const QModelIndex& parent) const
 {
+	if(parent.isValid())
+		return 0;
+
 	return _player->playlist().size();
 }
 
 int PlaylistModel::columnCount(const QModelIndex& parent) const
 {
+	if(parent.isValid())
+		return 0;
+
 	return 4;
 }
 
@@ -36,14 +42,6 @@ QVariant PlaylistModel::data(const QModelIndex& index, int role) const
 		}
 	}
 	return QVariant();
-}
-
-bool PlaylistModel::moveRows(const QModelIndex& sourceParent, int sourceRow, int count, const QModelIndex& destinationParent, int destinationChild)
-{
-	if(destinationChild<rowCount()&&destinationChild>=0){
-		return true;
-	}
-	return false;
 }
 
 Qt::DropActions PlaylistModel::supportedDropActions() const
@@ -158,11 +156,6 @@ bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, i
 	}
 
 	return QAbstractTableModel::dropMimeData(data,action,row,column,parent);
-}
-
-bool PlaylistModel::setData(const QModelIndex& index, const QVariant& v, int role)
-{
-	return false;
 }
 
 void PlaylistModel::onCurrentIndexChanged(int oldIndex, int newIndex)

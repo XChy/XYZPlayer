@@ -73,12 +73,6 @@ void PlaylistView::mouseDoubleClickEvent(QMouseEvent* e)
 	}
 }
 
-QMimeData* PlaylistView::mimeData(const QModelIndexList& indexes) const
-{
-	QMimeData* data=new QMimeData;
-	return data;
-}
-
 void PlaylistView::setModel(PlaylistModel* model)
 {
 	QTableView::setModel(model);

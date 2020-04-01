@@ -60,7 +60,7 @@ int loadInfo(MusicObject& music)
 
 	av_register_all();
 
-	//WARNING In Qt5.9.9 toUtf8 is right and toLocal8Bit is wrong
+	//WARNING In new version of Qt toUtf8 is right but toLocal8Bit is wrong
 	if (ret = avformat_open_input(&fmt_ctx, music.path.toUtf8(), NULL, NULL)){
 		char buffer[128];
 		av_strerror(ret,buffer,sizeof(buffer));
