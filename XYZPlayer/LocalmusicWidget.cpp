@@ -12,8 +12,13 @@ LocalMusicWidget::LocalMusicWidget(QWidget *parent)
 	_model->setSonglists(&_local);
 	ui->view->setModel(_model);
 
-	connect(ui->view,&SonglistsView::aboutToOpenSonglist,[this](){
+	connect(ui->view,&SonglistsView::aboutToOpenSonglist,[this](Songlist* list){
+		ui->page_songlist->setSonglist(list);
 		ui->stackedWidget->setCurrentWidget(ui->page_songlist);
+	});
+	connect(ui->page_songlist,&SonglistWidget::aboutToReturn,[this](){
+		ui->stackedWidget->setCurrentWidget(ui->page_songlists);
+		ui->page_songlist->setSonglist(nullptr);
 	});
 }
 

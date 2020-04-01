@@ -1,13 +1,14 @@
 #include "SonglistModel.h"
 
 SonglistModel::SonglistModel(QObject *parent)
-	: QAbstractTableModel(parent)
+	: QAbstractTableModel(parent),
+	  _songlist(nullptr)
 {
 }
 
 int SonglistModel::rowCount(const QModelIndex &parent) const
 {
-	if (parent.isValid())
+	if (parent.isValid()||!_songlist)
 		return 0;
 
 	return _songlist->size();
@@ -15,15 +16,34 @@ int SonglistModel::rowCount(const QModelIndex &parent) const
 
 int SonglistModel::columnCount(const QModelIndex &parent) const
 {
-	if (parent.isValid())
+	if (parent.isValid()||!_songlist)
 		return 0;
 
 	return 4;
 }
 
+QVariant SonglistModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if(role==Qt::DisplayRole){
+		switch (section) {
+		case 0:
+			return tr("title");
+		case 1:
+			return tr("artist");
+		case 2:
+			return tr("album");
+		case 3:
+			return tr("duration");
+		}
+	}
+	return QAbstractTableModel::headerData(section,orientation,role);
+}
+
 QVariant SonglistModel::data(const QModelIndex &index, int role) const
 {
 	if (!index.isValid())
+		return QVariant();
+	if(!_songlist)
 		return QVariant();
 
 	if(role==Qt::DisplayRole){
@@ -82,8 +102,24 @@ bool SonglistModel::canDropMimeData(const QMimeData* data, Qt::DropAction action
 	return data->hasUrls()||data->hasFormat("XYZPlayer/MusiclistAndIndexes");
 }
 
+bool SonglistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+{
+	return QAbstractTableModel::dropMimeData(data,action,row,column,parent);
+}
+
 void SonglistModel::refresh()
 {
 	beginResetModel();
 	endResetModel();
+}
+
+Songlist* SonglistModel::songlist() const
+{
+	return _songlist;
+}
+
+void SonglistModel::setSonglist(Songlist* songlist)
+{
+	_songlist = songlist;
+	refresh();
 }

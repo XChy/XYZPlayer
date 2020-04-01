@@ -15,6 +15,9 @@ class SonglistModel : public QAbstractTableModel
 		int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 		int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
+		virtual QVariant headerData(int section, Qt::Orientation orientation,
+										int role = Qt::DisplayRole) const override;
+
 		QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
 		virtual Qt::DropActions supportedDropActions() const override;
@@ -31,6 +34,9 @@ class SonglistModel : public QAbstractTableModel
 		virtual bool dropMimeData(const QMimeData *data,Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
 
 		void refresh();
+
+		Songlist* songlist() const;
+		void setSonglist(Songlist* songlist);
 	private:
 		Songlist* _songlist;
 };

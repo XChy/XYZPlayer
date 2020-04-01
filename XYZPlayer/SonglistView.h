@@ -2,13 +2,15 @@
 #define SONGLISTVIEW_H
 
 #include <QTableView>
+#include <QHeaderView>
 #include <QMenu>
 #include <XYZPlayer/SonglistModel.h>
 
 class SonglistView : public QTableView
 {
+		Q_OBJECT
 	public:
-		SonglistView();
+		SonglistView(QWidget* parent=nullptr);
 		void contextMenuEvent(QContextMenuEvent *e);
 		void mouseDoubleClickEvent(QMouseEvent* e);
 

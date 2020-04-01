@@ -59,6 +59,10 @@ color:black;
 font-size:14px;
 font-family:宋体;
 }
+#songlistNameLabel{
+font-size:20px;
+font-family:微软雅黑;
+}
 #musicsLabel,#bioLabel,#lyricsLabel{
 font-size:20px;
 font-family:微软雅黑;
@@ -171,6 +175,17 @@ qproperty-showGrid:false;
 qproperty-alternatingRowColors:true;
 background-color:white;
 alternate-background-color:#eeeeee;
+selection-color:black;
+selection-background-color:#dddddd;
+border-radius: 0px;
+padding: 2px 4px;
+}
+SonglistView{
+color: black;
+qproperty-showGrid:false;
+qproperty-alternatingRowColors:true;
+background-color:white;
+alternate-background-color:#f1f1f1;
 selection-color:black;
 selection-background-color:#dddddd;
 border-radius: 0px;

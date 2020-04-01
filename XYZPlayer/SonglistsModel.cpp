@@ -1,13 +1,14 @@
 #include "SonglistsModel.h"
 
 SonglistsModel::SonglistsModel(QObject *parent)
-	: QAbstractListModel(parent)
+	: QAbstractListModel(parent),
+	  _songlists(nullptr)
 {
 }
 
 int SonglistsModel::rowCount(const QModelIndex& parent) const
 {
-	if(parent.isValid())
+	if(parent.isValid()||!_songlists)
 		return 0;
 
 	return _songlists->size();
@@ -84,6 +85,9 @@ bool SonglistsModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 	if (action == Qt::IgnoreAction)
 		return true;
 
+	if(!_songlists)
+		return true;
+
 	int insertIndex;
 	if (row != -1 && !(row>=rowCount()) )
 		insertIndex = row;
@@ -113,7 +117,8 @@ bool SonglistsModel::dropMimeData(const QMimeData* data, Qt::DropAction action, 
 			int index;
 			stream>>index;
 			_songlists->operator[](insertIndex).insert(0,list->at(index));
-			MusicUtil::loadPicture(_songlists->operator[](insertIndex).operator[](0));
+			if(_songlists->operator[](insertIndex).operator[](0).picture.isNull())
+				MusicUtil::loadPicture(_songlists->operator[](insertIndex).operator[](0));
 		}
 		refresh();
 		return true;
@@ -137,7 +142,6 @@ Songlists* SonglistsModel::songlists() const
 void SonglistsModel::setSonglists(Songlists* songlist)
 {
 	_songlists = songlist;
-	beginResetModel();
-	endResetModel();
+	refresh();
 }
 
