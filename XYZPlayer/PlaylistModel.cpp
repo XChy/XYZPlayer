@@ -89,15 +89,16 @@ bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, i
 	qDebug()<<"Drop in playlist:"<<row<<", Parent"<<parent;
 	if (action == Qt::IgnoreAction)
 		return true;
-	if (data->hasUrls()){
 
-		int insertIndex;
-		if (row != -1)
-			insertIndex = row;
-		else if (parent.isValid())
-			insertIndex = parent.row();
-		else
-			insertIndex = rowCount();
+	int insertIndex;
+	if (row != -1)
+		insertIndex = row;
+	else if (parent.isValid())
+		insertIndex = parent.row();
+	else
+		insertIndex = rowCount();
+
+	if (data->hasUrls()){
 
 		int beginIndex=insertIndex;
 
@@ -119,18 +120,11 @@ bool PlaylistModel::dropMimeData(const QMimeData* data, Qt::DropAction action, i
 		int size;
 		stream>>(qulonglong&)list;
 		stream>>size;
-
-		int insertIndex;
-		if (row != -1)
-			insertIndex = row;
-		else if (parent.isValid())
-			insertIndex = parent.row();
-		else
-			insertIndex = rowCount()-1;
-
 		qDebug()<<"Insert in playlist:"<<insertIndex;
 
 		if(list == &_player->playlist()){
+			if(insertIndex==rowCount())
+				--insertIndex;
 			QList<int> indexes;
 			for(int i=0;i<size;++i){
 				int index;

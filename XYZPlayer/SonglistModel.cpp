@@ -87,7 +87,7 @@ QMimeData* SonglistModel::mimeData(const QModelIndexList& indexes) const
 	QMimeData* data=new QMimeData;
 	QByteArray array;
 	QDataStream stream(&array,QIODevice::WriteOnly);
-	stream<<(qulonglong)&_songlist;
+	stream<<(qulonglong)_songlist;
 	stream<<indexes.size()/columnCount();
 	for(int i=0;i<indexes.size()/columnCount();++i){
 		stream<<indexes[i*columnCount()].row();

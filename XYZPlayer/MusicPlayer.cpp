@@ -132,6 +132,7 @@ void MusicPlayer::removeMusics(int begin, int end)
 {
 	//currentIndex 属于 [begin,end)时
 	int size=end-begin;
+	MusicObject* current=&currentMusic();
 	if(_currentIndex>=begin&&_currentIndex<end){
 		if(_playlist.size()==size){
 			setCurrentIndex(-1);
@@ -147,7 +148,9 @@ void MusicPlayer::removeMusics(int begin, int end)
 				playAt(begin);
 			}
 		}
-	}else if(end>=_currentIndex){
+	}else if(_currentIndex<begin){
+		_playlist.erase(_playlist.begin()+begin,_playlist.begin()+end);
+	}else if(end<=_currentIndex){
 		_currentIndex -= size;
 		_playlist.erase(_playlist.begin()+begin,_playlist.begin()+end);//erase也是含头不含尾
 	}
